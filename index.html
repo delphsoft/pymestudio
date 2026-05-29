@@ -1,16 +1,6 @@
 <!doctype html>
 <html lang="es-AR">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SXM2JN2F2F"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SXM2JN2F2F');
-</script>
-  
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>PymeStudio — Gestión ágil para tu PyME</title>
@@ -3341,7 +3331,7 @@ function HeroDashboardLoop({ wide }) {
     const t = setInterval(() => setTick(x => x + 1), 1800);
     return () => clearInterval(t);
   }, []);
-  const rows = ['Lacteos del Sur SA', 'Distribuidora Norte', 'Estudio Garcia & Asoc.', 'Pizzeria La Esquina', 'Taller Mecanico JR'];
+  const rows = ['Almacén Don Carlos', 'Imprenta Belgrano', 'Carpintería Los Andes', 'Verdulería El Trébol', 'Gomería Ruta 9'];
   return (
     <div style={{
       position:'absolute', inset: wide ? '60px 80px' : '60px 36px',
@@ -3591,7 +3581,7 @@ function FacturaPreview() {
         <div style={{opacity:.6, fontSize:10.5, letterSpacing:'.05em', textTransform:'uppercase'}}>Tipo</div>
         <div style={{fontSize:16, marginTop:4}}>Factura A 00001-00000128</div>
         <div style={{marginTop:14, opacity:.6, fontSize:10.5, letterSpacing:'.05em', textTransform:'uppercase'}}>Cliente</div>
-        <div style={{fontSize:14, marginTop:4}}>Lácteos del Sur S.A.</div>
+        <div style={{fontSize:14, marginTop:4}}>Almacén Don Carlos</div>
         <div style={{opacity:.6, marginTop:2, fontSize:12}}>CUIT 30-71234567-8</div>
       </div>
       <div>
@@ -3734,11 +3724,11 @@ function UIShell({ title, children, badge }) {
 
 function UIFacturas() {
   const rows = [
-    ['00000128', 'Lácteos del Sur SA', 'A', '$ 84.250', 'CAE', 'ok'],
-    ['00000127', 'Distribuidora Norte', 'B', '$ 32.400', 'CAE', 'ok'],
-    ['00000126', 'Estudio García', 'A', '$ 28.600', 'Pendiente', 'pend'],
-    ['00000125', 'Pizzería La Esquina', 'C', '$ 12.800', 'CAE', 'ok'],
-    ['00000124', 'Taller Mec. JR', 'B', '$ 46.500', 'CAE', 'ok'],
+    ['00000128', 'Almacén Don Carlos', 'A', '$ 84.250', 'CAE', 'ok'],
+    ['00000127', 'Imprenta Belgrano', 'B', '$ 32.400', 'CAE', 'ok'],
+    ['00000126', 'Carpintería Los Andes', 'A', '$ 28.600', 'Pendiente', 'pend'],
+    ['00000125', 'Verdulería El Trébol', 'C', '$ 12.800', 'CAE', 'ok'],
+    ['00000124', 'Gomería Ruta 9', 'B', '$ 46.500', 'CAE', 'ok'],
   ];
   return (
     <UIShell title="Facturas emitidas" badge="MAY 2026">
