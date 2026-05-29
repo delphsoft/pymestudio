@@ -7,7 +7,1623 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<style>
+
+:root {
+  /* palette — PymeStudio: cream, ink, terracotta, forest accents */
+  --bg:        #F4EFE6;
+  --bg-2:      #EBE4D5;
+  --ink:       #1A1A1A;
+  --ink-2:     #3A3A36;
+  --muted:     #7A746A;
+  --line:      rgba(26,26,26,.10);
+  --line-2:    rgba(26,26,26,.18);
+  --accent:    #C24A1F;   /* terracotta — primary accent */
+  --accent-2:  #E37449;   /* lighter terracotta */
+  --sage:      #CCE2BD;   /* logo sage — surface tone */
+  --sage-2:    #B8D3A6;   /* deeper sage */
+  --forest:    #1E4538;   /* logo dark green — logo + secondary */
+  --forest-2:  #2A6450;
+  --paper:     #FBF8F1;
+  --shadow:    0 1px 0 rgba(26,26,26,.05), 0 24px 60px -30px rgba(26,26,26,.25);
+
+  --radius-sm: 10px;
+  --radius:    14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --nav-h: 72px;
+  --container: 1240px;
+}
+
+html[data-theme="dark"] {
+  --bg:     #14130F;
+  --bg-2:   #1C1A15;
+  --ink:    #F4EFE6;
+  --ink-2:  #D8D2C5;
+  --muted:  #8A8275;
+  --line:   rgba(244,239,230,.10);
+  --line-2: rgba(244,239,230,.18);
+  --accent:   #E37449;
+  --accent-2: #F09063;
+  --forest:   #C9D6BD;
+  --forest-2: #A8B89B;
+  --paper:    #1E1C17;
+  --shadow:   0 1px 0 rgba(244,239,230,.04), 0 24px 60px -30px rgba(0,0,0,.6);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { background: var(--bg); }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "ss02";
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+img, svg, video { display: block; max-width: 100%; }
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+@media (max-width: 720px) {
+  .container { padding: 0 20px; }
+}
+
+/* —— Typography utilities —— */
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+}
+.section-title {
+  font-size: clamp(36px, 5vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  margin: 16px 0 0;
+  text-wrap: balance;
+}
+.section-title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.lede {
+  font-size: 18px;
+  color: var(--ink-2);
+  max-width: 56ch;
+  line-height: 1.45;
+  margin: 20px 0 0;
+}
+
+/* —— Buttons —— */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: transform .15s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn--primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+.btn--primary:hover { background: var(--accent); color: #fff; }
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+.btn--ghost:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn--accent {
+  background: var(--accent);
+  color: #fff;
+}
+.btn--accent:hover { background: var(--ink); color: var(--bg); }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  color: var(--ink-2);
+  font-size: 13px;
+  border: 1px solid var(--line);
+}
+
+/* —— Nav —— */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  transition: background .25s ease, backdrop-filter .25s ease, border-color .25s ease;
+  border-bottom: 1px solid transparent;
+}
+.nav.scrolled {
+  background: color-mix(in oklab, var(--bg) 80%, transparent);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border-bottom-color: var(--line);
+}
+.nav__inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.nav__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+.nav__logo-mark {
+  width: 28px; height: 28px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--accent);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+}
+.nav__links {
+  display: flex;
+  gap: 28px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.nav__links a:hover { color: var(--accent); }
+.nav__cta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.nav__cta .btn {
+  height: 38px;
+  padding: 0 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav__cta .btn--ghost {
+  border-color: transparent;
+  background: transparent;
+}
+.nav__cta .btn--ghost:hover {
+  background: var(--bg-2);
+  color: var(--ink);
+  border-color: transparent;
+}
+._unused_ {
+  gap: 10px;
+  align-items: center;
+}
+.nav__menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  height: 40px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 920px) {
+  .nav__links, .nav__cta .btn--ghost { display: none; }
+  .nav__menu-btn { display: inline-flex; }
+}
+
+/* mobile drawer */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--bg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transform: translateY(-100%);
+  transition: transform .35s cubic-bezier(.6,.05,.1,1);
+  pointer-events: none;
+}
+.drawer.open {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.drawer__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--nav-h);
+  margin-top: -8px;
+}
+.drawer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+.drawer__links a {
+  font-size: 32px;
+  letter-spacing: -.02em;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.drawer__links a:last-child { border-bottom: 1px solid var(--line); }
+.drawer__cta { display: flex; gap: 10px; margin-top: auto; }
+@media (min-width: 921px) {
+  .drawer { display: none !important; }
+}
+
+/* —— Sections —— */
+section { padding: 96px 0; position: relative; }
+@media (max-width: 720px) { section { padding: 64px 0; } }
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 880px;
+  margin-bottom: 48px;
+}
+.section-head--center {
+  align-items: center;
+  text-align: center;
+  margin-left: auto; margin-right: auto;
+}
+.section-head--center .lede { margin-left: auto; margin-right: auto; }
+
+/* reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* —— Marquee —— */
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 28px 0;
+  background: var(--bg);
+}
+.marquee__track {
+  display: flex;
+  gap: 64px;
+  align-items: center;
+  animation: marquee 38s linear infinite;
+  width: max-content;
+}
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-2);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  opacity: .8;
+}
+.marquee__item svg { width: 26px; height: 26px; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* —— Hero —— */
+.hero {
+  padding: calc(var(--nav-h) + 60px) 0 60px;
+  position: relative;
+}
+.hero__inner {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+@media (max-width: 980px) {
+  .hero__inner { grid-template-columns: 1fr; gap: 48px; }
+}
+.hero__avatars {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.hero__avatar-stack {
+  display: flex;
+}
+.hero__avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  margin-left: -10px;
+  background-size: cover;
+  background-position: center;
+}
+.hero__avatar:first-child { margin-left: 0; }
+
+.hero__title {
+  font-size: clamp(44px, 6vw, 80px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  margin: 0;
+  text-wrap: balance;
+}
+.hero__title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+.hero__sub {
+  font-size: 18px;
+  max-width: 50ch;
+  margin: 24px 0 32px;
+  color: var(--ink-2);
+}
+.hero__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* hero visual */
+.hero__visual {
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--forest);
+  box-shadow: var(--shadow);
+}
+.hero__visual--video {
+  background: linear-gradient(160deg, #2B3A2E 0%, #1A1F1B 100%);
+}
+.hero__visual-tag {
+  position: absolute;
+  left: 18px; top: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(244,239,230,.16);
+  backdrop-filter: blur(10px);
+  color: #F4EFE6;
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  z-index: 2;
+}
+.hero__visual-tag .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #9BB369;
+  box-shadow: 0 0 0 4px rgba(155,179,105,.25);
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(155,179,105,.25); }
+  50% { box-shadow: 0 0 0 8px rgba(155,179,105,.05); }
+}
+
+/* —— Stats —— */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.stats__item {
+  padding: 40px 28px;
+  border-right: 1px solid var(--line);
+}
+.stats__item:last-child { border-right: none; }
+.stats__num {
+  font-size: clamp(48px, 5.5vw, 76px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+}
+.stats__num em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+.stats__label {
+  margin: 14px 0 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+  max-width: 28ch;
+}
+@media (max-width: 900px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stats__item { border-right: none; border-bottom: 1px solid var(--line); }
+  .stats__item:nth-child(odd) { border-right: 1px solid var(--line); }
+  .stats__item:nth-last-child(-n+2) { border-bottom: none; }
+}
+
+/* —— Modules grid —— */
+.modules {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
+.module {
+  grid-column: span 4;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 260px;
+  transition: transform .25s ease, border-color .25s ease, background .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.module:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-2);
+}
+.module--wide { grid-column: span 8; min-height: 320px; }
+.module--accent { background: var(--ink); color: var(--bg); }
+.module--accent .module__title,
+.module--accent .module__desc { color: var(--bg); }
+.module--accent .module__icon {
+  background: rgba(244,239,230,.12);
+  color: var(--bg);
+}
+.module--forest {
+  background: var(--forest);
+  color: #F4EFE6;
+}
+.module--forest .module__title,
+.module--forest .module__desc { color: #F4EFE6; }
+.module--forest .module__icon { background: rgba(244,239,230,.12); color: #F4EFE6; }
+
+.module__icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--bg-2);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+}
+.module__icon svg { width: 22px; height: 22px; }
+.module__title {
+  font-size: 22px;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+  margin: 6px 0 0;
+}
+.module__desc {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.module__num {
+  position: absolute;
+  top: 22px; right: 24px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .05em;
+  font-family: var(--font-mono);
+}
+@media (max-width: 980px) {
+  .module, .module--wide { grid-column: span 6; }
+}
+@media (max-width: 640px) {
+  .module, .module--wide { grid-column: span 12; }
+}
+
+/* —— Dashboard mock —— */
+.dashboard {
+  background: var(--forest);
+  color: #F4EFE6;
+  border-radius: var(--radius-xl);
+  padding: 64px;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 56px;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+}
+.dashboard::before {
+  content: "";
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(227,116,73,.22) 0%, transparent 65%);
+  pointer-events: none;
+}
+.dashboard__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.dashboard__kpis {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  margin: 32px 0 36px;
+  border-top: 1px solid rgba(244,239,230,.14);
+  border-bottom: 1px solid rgba(244,239,230,.14);
+}
+.dashboard__kpi {
+  padding: 18px 16px 18px 0;
+  border-right: 1px solid rgba(244,239,230,.14);
+}
+.dashboard__kpi:last-child { border-right: none; padding-left: 16px; }
+.dashboard__kpi:nth-child(2) { padding-left: 16px; }
+.dashboard__kpi-label {
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(244,239,230,.55);
+}
+.dashboard__kpi-value {
+  font-size: 28px;
+  margin-top: 6px;
+  letter-spacing: -.02em;
+  font-weight: 500;
+  line-height: 1;
+}
+.dashboard__kpi-value em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: #E37449;
+}
+.dashboard__kpi-trend {
+  font-size: 11.5px;
+  margin-top: 6px;
+  color: #9BB369;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.dashboard__kpi-trend--neg { color: #E37449; }
+.dashboard__features {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+.dashboard__feature {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 14.5px;
+  color: rgba(244,239,230,.85);
+  line-height: 1.45;
+}
+.dashboard__feature svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: #E37449;
+}
+.dashboard__feature strong {
+  color: #F4EFE6;
+  font-weight: 500;
+}
+.dashboard__title {
+  font-size: clamp(36px, 4.4vw, 60px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  margin: 16px 0 0;
+}
+.dashboard__title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+.dashboard__desc {
+  margin: 22px 0 28px;
+  color: rgba(244,239,230,.78);
+  max-width: 46ch;
+  font-size: 17px;
+  line-height: 1.5;
+}
+  max-width: 42ch;
+}
+.dashboard__tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(244,239,230,.15);
+  padding-bottom: 0;
+  flex-wrap: wrap;
+}
+.dashboard__tab {
+  background: none;
+  border: none;
+  color: rgba(244,239,230,.6);
+  padding: 10px 0;
+  margin-right: 18px;
+  font-size: 14px;
+  position: relative;
+  transition: color .2s;
+}
+.dashboard__tab.active { color: #F4EFE6; }
+.dashboard__tab.active::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.ui-mock {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px -20px rgba(0,0,0,.4);
+  font-size: 13px;
+}
+.ui-mock__head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+}
+.ui-mock__head-left { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.ui-mock__body { padding: 18px; }
+
+@media (max-width: 880px) {
+  .dashboard { grid-template-columns: 1fr; padding: 32px; gap: 32px; }
+  .dashboard__kpis { grid-template-columns: 1fr 1fr; }
+  .dashboard__kpi:nth-child(2) { border-right: none; }
+  .dashboard__kpi:nth-child(3) { border-top: 1px solid rgba(244,239,230,.14); padding-top: 18px; padding-left: 0; }
+}
+
+/* —— Steps —— */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+.step {
+  padding: 32px 24px 36px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.step:last-child { border-right: none; }
+.step__num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: .05em;
+}
+.step__title {
+  font-size: 22px;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+  line-height: 1.1;
+  margin: 0;
+}
+.step__title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+.step__desc {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+.step__icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--bg-2);
+  display: grid; place-items: center;
+  margin-bottom: 4px;
+}
+@media (max-width: 980px) {
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .step { border-right: none; border-bottom: 1px solid var(--line); }
+  .step:nth-child(odd) { border-right: 1px solid var(--line); }
+}
+@media (max-width: 560px) {
+  .steps { grid-template-columns: 1fr; }
+  .step { border-right: none !important; }
+}
+
+/* —— Testimonials —— */
+.testimonials {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.testimonial {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 280px;
+}
+.testimonial__quote {
+  font-size: 19px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  margin: 0;
+  flex: 1;
+}
+.testimonial__quote em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+.testimonial__author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.testimonial__avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  background-size: cover;
+  background-position: center;
+}
+.testimonial__name { font-weight: 500; font-size: 14.5px; }
+.testimonial__role { font-size: 13px; color: var(--muted); }
+.testimonial__stars { display: flex; gap: 2px; color: var(--accent); }
+@media (max-width: 900px) { .testimonials { grid-template-columns: 1fr; } }
+
+/* —— Pricing —— */
+.pricing-toggle {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--bg-2);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  margin: 0 auto 40px;
+  position: relative;
+}
+.pricing-toggle__btn {
+  background: none;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--ink-2);
+  transition: color .2s;
+  z-index: 2;
+  position: relative;
+}
+.pricing-toggle__btn.active { color: var(--bg); }
+.pricing-toggle__slider {
+  position: absolute;
+  top: 4px;
+  height: calc(100% - 8px);
+  background: var(--ink);
+  border-radius: 999px;
+  transition: left .3s cubic-bezier(.4,0,.2,1), width .3s cubic-bezier(.4,0,.2,1);
+  z-index: 1;
+}
+.pricing-toggle__badge {
+  margin-left: 8px;
+  font-size: 11px;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.plan {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: relative;
+}
+.plan--featured {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.plan--featured .plan__name,
+.plan--featured .plan__price,
+.plan--featured .plan__desc,
+.plan--featured .plan__feature { color: var(--bg); }
+.plan--featured .plan__feature svg { color: var(--accent-2); }
+.plan__badge {
+  position: absolute;
+  top: -10px; left: 32px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.plan__name {
+  font-size: 14px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin: 0;
+  font-weight: 500;
+}
+.plan__price {
+  font-size: 48px;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  line-height: 1;
+  margin: 0;
+}
+.plan__price-period { font-size: 14px; color: var(--muted); font-weight: 400; }
+.plan__price-old {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: line-through;
+  margin-left: 6px;
+  font-weight: 400;
+}
+.plan__desc {
+  font-size: 14.5px;
+  color: var(--ink-2);
+  margin: 0;
+  line-height: 1.45;
+}
+.plan__features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.plan__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.plan__feature svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--accent);
+}
+@media (max-width: 900px) { .pricing { grid-template-columns: 1fr; } }
+
+/* —— Blog —— */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-decoration: none;
+  color: inherit;
+}
+.post__img {
+  aspect-ratio: 5/4;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-2);
+}
+.post__meta { font-size: 13px; color: var(--muted); }
+.post__title {
+  font-size: 20px;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  font-weight: 500;
+  margin: 0;
+  transition: color .2s;
+}
+.post:hover .post__title { color: var(--accent); }
+@media (max-width: 900px) { .blog-grid { grid-template-columns: 1fr; } }
+
+/* —— FAQ —— */
+.faq {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.faq__item {
+  border-top: 1px solid var(--line);
+  padding: 0;
+}
+.faq__item:last-child { border-bottom: 1px solid var(--line); }
+.faq__btn {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  color: var(--ink);
+}
+.faq__btn em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+.faq__toggle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  transition: transform .3s ease, background .2s;
+}
+.faq__item.open .faq__toggle {
+  transform: rotate(45deg);
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.faq__panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .4s cubic-bezier(.4,0,.2,1);
+}
+.faq__answer {
+  padding: 0 60px 24px 0;
+  color: var(--ink-2);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+
+/* —— Closing CTA —— */
+.closing {
+  background: var(--forest);
+  color: #F4EFE6;
+  border-radius: var(--radius-xl);
+  padding: 80px 60px;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 48px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.closing__title {
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  margin: 16px 0 0;
+}
+.closing__title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+.closing__desc {
+  margin: 24px 0 32px;
+  color: rgba(244,239,230,.78);
+  max-width: 44ch;
+  font-size: 17px;
+}
+.closing__img {
+  aspect-ratio: 4/5;
+  border-radius: var(--radius-lg);
+  background: rgba(244,239,230,.08);
+  overflow: hidden;
+}
+.closing .eyebrow { color: rgba(244,239,230,.7); }
+.closing .eyebrow::before { background: var(--accent-2); }
+.closing .btn--primary { background: var(--bg); color: var(--ink); }
+.closing .btn--primary:hover { background: var(--accent); color: #fff; }
+.closing .btn--ghost { color: var(--bg); border-color: rgba(244,239,230,.3); }
+.closing .btn--ghost:hover { background: var(--bg); color: var(--ink); }
+@media (max-width: 880px) {
+  .closing { grid-template-columns: 1fr; padding: 48px 28px; }
+}
+
+/* —— Footer —— */
+.footer {
+  padding: 80px 0 40px;
+  border-top: 1px solid var(--line);
+  margin-top: 80px;
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 60px;
+}
+.footer__col h4 {
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 18px;
+  font-weight: 500;
+}
+.footer__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.footer__col a { color: var(--ink-2); font-size: 14.5px; }
+.footer__col a:hover { color: var(--accent); }
+.footer__about p {
+  color: var(--ink-2);
+  font-size: 14.5px;
+  max-width: 36ch;
+  margin: 16px 0 0;
+}
+.footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13.5px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.footer__big {
+  font-size: clamp(80px, 16vw, 220px);
+  letter-spacing: -0.05em;
+  font-weight: 500;
+  line-height: .9;
+  margin: 0 0 24px;
+  color: var(--ink);
+  text-align: center;
+}
+.footer__big em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+@media (max-width: 880px) {
+  .footer__grid { grid-template-columns: 1fr 1fr; }
+  .footer__about { grid-column: 1 / -1; }
+}
+
+/* mock UI bits */
+.bar-row { display: flex; gap: 6px; align-items: center; }
+.bar { height: 6px; border-radius: 4px; background: var(--bg-2); }
+
+/* footer social icons */
+.footer__social {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  display: inline-grid;
+  place-items: center;
+  transition: background .2s, color .2s, border-color .2s, transform .2s;
+}
+.footer__social:hover {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+
+/* —— Product-page extensions —————————————————————— */
+
+/* Nav dropdown (Productos) */
+.nav__item { position: relative; }
+.nav__dropdown {
+  position: absolute;
+  top: 100%;
+  left: -16px;
+  margin-top: 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 10px;
+  min-width: 360px;
+  box-shadow: 0 24px 60px -20px rgba(26,26,26,.18);
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 60;
+}
+/* Invisible bridge so hover survives crossing the 14px gap */
+.nav__dropdown::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: -16px;
+  height: 16px;
+}
+.nav__item:hover .nav__dropdown,
+.nav__item:focus-within .nav__dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.nav__dropdown-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 12px;
+  transition: background .15s ease;
+}
+.nav__dropdown-item:hover { background: var(--bg-2); }
+.nav__dropdown-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--bg-2);
+  color: var(--ink);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.nav__dropdown-title { font-size: 14.5px; font-weight: 500; }
+.nav__dropdown-desc { font-size: 12.5px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+
+/* Product hero — extends .hero */
+.prod-eyebrow-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.prod-eyebrow-row .eyebrow::before { display: none; }
+.prod-eyebrow-row .eyebrow { padding: 0; }
+.prod-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  font-size: 11.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.prod-badge--live { color: #3F5142; background: #E8F0DA; border-color: rgba(63,81,66,.2); }
+.prod-badge--beta { color: #1f4670; background: #DAE6F0; border-color: rgba(31,70,112,.2); }
+.prod-badge--soon { color: #7A2A0E; background: #FCE9DA; border-color: rgba(122,42,14,.2); }
+
+.prod-hero-meta {
+  display: flex;
+  gap: 28px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+.prod-hero-meta-item { font-size: 13px; color: var(--muted); }
+.prod-hero-meta-item strong { display: block; font-size: 17px; color: var(--ink); font-weight: 500; margin-top: 2px; letter-spacing: -.01em; }
+
+/* Feature grid (2 column on prod pages) */
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+.feat {
+  padding: 32px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background .2s ease;
+}
+.feat:hover { background: var(--paper); }
+.feat__icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--bg-2);
+  color: var(--ink);
+  display: grid; place-items: center;
+}
+.feat__title {
+  font-size: 19px;
+  letter-spacing: -.01em;
+  font-weight: 500;
+  margin: 8px 0 0;
+}
+.feat__title em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+.feat__desc { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.5; }
+@media (max-width: 720px) {
+  .feat-grid { grid-template-columns: 1fr; }
+}
+
+/* Feature lists with checkmarks (compact) */
+.feat-list {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 32px;
+}
+.feat-list li {
+  display: flex; gap: 10px;
+  align-items: flex-start;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.feat-list li svg { color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+@media (max-width: 720px) { .feat-list { grid-template-columns: 1fr; } }
+
+/* "Other products" cross-sell row */
+.cross {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.cross__card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform .2s, border-color .2s;
+}
+.cross__card:hover { transform: translateY(-3px); border-color: var(--line-2); }
+.cross__card-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--bg-2);
+  display: grid; place-items: center;
+}
+.cross__card-name { font-size: 18px; font-weight: 500; letter-spacing: -.01em; margin: 4px 0 0; }
+.cross__card-name em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+.cross__card-desc { font-size: 13.5px; color: var(--ink-2); margin: 0; line-height: 1.45; }
+.cross__card-link {
+  margin-top: auto; padding-top: 10px;
+  font-size: 13.5px; color: var(--accent);
+  display: inline-flex; gap: 6px; align-items: center;
+}
+@media (max-width: 880px) { .cross { grid-template-columns: 1fr; } }
+
+/* Plan callout for product page */
+.plan-callout {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+.plan-callout__title {
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -.02em;
+  margin: 16px 0 0;
+  font-weight: 500;
+}
+.plan-callout__title em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+.plan-callout__price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 28px;
+  border: 1px solid rgba(244,239,230,.2);
+  border-radius: var(--radius-lg);
+  background: rgba(244,239,230,.04);
+}
+.plan-callout__price-num {
+  font-size: 56px;
+  letter-spacing: -.03em;
+  font-weight: 500;
+  line-height: 1;
+}
+.plan-callout__price-period { font-size: 13px; color: rgba(244,239,230,.6); }
+.plan-callout .eyebrow { color: rgba(244,239,230,.6); }
+.plan-callout .eyebrow::before { background: var(--accent-2); }
+@media (max-width: 880px) { .plan-callout { grid-template-columns: 1fr; padding: 28px; } }
+
+/* Integrations strip */
+.int-strip {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.int-pill {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--ink);
+}
+.int-pill__mark {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Module card link arrow */
+.module__arrow {
+  position: absolute;
+  bottom: 24px; right: 24px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--ink);
+  display: grid; place-items: center;
+  opacity: 0; transform: translate(-6px, 6px);
+  transition: opacity .25s, transform .25s;
+}
+.module:hover .module__arrow { opacity: 1; transform: translate(0,0); }
+.module--accent .module__arrow,
+.module--forest .module__arrow { background: var(--bg); color: var(--ink); }
+
+.module-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.module__chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.module__chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  font-size: 12px;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+.module--accent .module__chip {
+  background: rgba(244,239,230,.10);
+  border-color: rgba(244,239,230,.18);
+  color: var(--bg);
+}
+.module--forest .module__chip {
+  background: rgba(244,239,230,.10);
+  border-color: rgba(244,239,230,.18);
+  color: #F4EFE6;
+}
+
+
+/* —— Services (external services banner) —— */
+.services {
+  padding: 120px 0 96px;
+  background:
+    linear-gradient(180deg, var(--bg) 0%, color-mix(in oklab, var(--sage) 55%, var(--bg)) 24%, color-mix(in oklab, var(--sage) 55%, var(--bg)) 76%, var(--bg) 100%);
+  position: relative;
+}
+.services__head {
+  max-width: 720px;
+  margin: 0 0 56px;
+}
+.services__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 920px) {
+  .services__grid { grid-template-columns: 1fr; }
+}
+.service-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  color: var(--ink);
+}
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 70px -30px rgba(30, 69, 56, .35);
+  border-color: var(--accent);
+}
+.service-card__visual {
+  width: 100%;
+  aspect-ratio: 400 / 220;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 1px solid var(--line);
+}
+.service-card__visual svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.service-card__body {
+  padding: 32px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+.service-card__brand {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  line-height: 1;
+}
+.service-card__brand em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.service-card__tagline {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.service-card__desc {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  max-width: 50ch;
+}
+.service-card__bullets {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 8px;
+  display: grid;
+  gap: 8px;
+}
+.service-card__bullets li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.service-card__bullets li svg {
+  color: var(--accent);
+  flex: 0 0 auto;
+}
+.service-card__foot {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.service-card__stat-num {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.service-card__stat-num span {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--accent);
+  opacity: .7;
+}
+.service-card__stat-label {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 24ch;
+  line-height: 1.35;
+}
+.service-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent);
+  white-space: nowrap;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--sage) 60%, transparent);
+  transition: background .2s ease, color .2s ease;
+}
+.service-card:hover .service-card__cta {
+  background: var(--accent);
+  color: var(--paper);
+}
+.services__note {
+  margin: 32px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+</style>
 </head>
 <body>
 
@@ -17,10 +1633,2550 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-<script src="image-slot.js"></script>
-<script type="text/babel" src="icons.js"></script>
-<script type="text/babel" src="sections.js"></script>
-<script type="text/babel" src="blog-post.js"></script>
+<script>
+/**
+ * <image-slot> — user-fillable image placeholder.
+ *
+ * Drop this into a deck, mockup, or page wherever you want the user to
+ * supply an image. You control the slot's shape and size; the user fills it
+ * by dragging an image file onto it (or clicking to browse). The dropped
+ * image persists across reloads via a .image-slots.state.json sidecar —
+ * same read-via-fetch / write-via-window.omelette pattern as
+ * design_canvas.jsx, so the filled slot shows on share links, downloaded
+ * zips, and PPTX export. Outside the omelette runtime the slot is read-only.
+ *
+ * The host bridge only allows sidecar writes at the project root, so the
+ * HTML that uses this component is assumed to live at the project root too
+ * (same constraint as design_canvas.jsx).
+ *
+ * Attributes:
+ *   id           Persistence key. REQUIRED for the drop to survive reload —
+ *                every slot on the page needs a distinct id.
+ *   shape        'rect' | 'rounded' | 'circle' | 'pill'   (default 'rounded')
+ *                'circle' applies 50% border-radius; on a non-square slot
+ *                that's an ellipse — set equal width and height for a true
+ *                circle.
+ *   radius       Corner radius in px for 'rounded'.       (default 12)
+ *   mask         Any CSS clip-path value. Overrides `shape` — use this for
+ *                hexagons, blobs, arbitrary polygons.
+ *   fit          object-fit: cover | contain | fill.       (default 'cover')
+ *                With cover (the default) double-clicking the filled slot
+ *                enters a reframe mode: the whole image spills past the mask
+ *                (translucent outside, opaque inside), drag to reposition,
+ *                corner-drag to scale. The crop persists alongside the image
+ *                in the sidecar. contain/fill stay static.
+ *   position     object-position for fit=contain|fill.     (default '50% 50%')
+ *   placeholder  Empty-state caption.                      (default 'Drop an image')
+ *   src          Optional initial/fallback image URL. A user drop overrides
+ *                it; clearing the drop reveals src again.
+ *
+ * Size and layout come from ordinary CSS on the element — width/height
+ * inline or from a parent grid — so it composes with any layout.
+ *
+ * Usage:
+ *   <script src="image-slot.js"><\/script>
+ *   <image-slot id="hero"   style="width:800px;height:450px" shape="rounded" radius="20"
+ *               placeholder="Drop a hero image"></image-slot>
+ *   <image-slot id="avatar" style="width:120px;height:120px" shape="circle"></image-slot>
+ *   <image-slot id="kite"   style="width:300px;height:300px"
+ *               mask="polygon(50% 0, 100% 50%, 50% 100%, 0 50%)"></image-slot>
+ */
+
+(() => {
+  const STATE_FILE = '.image-slots.state.json';
+  // 2× a ~600px slot in a 1920-wide deck — retina-sharp without making the
+  // sidecar enormous. A 1200px WebP at q=0.85 is ~150-300KB.
+  const MAX_DIM = 1200;
+  // Raster formats only. SVG is excluded (can carry script; createImageBitmap
+  // on SVG blobs is inconsistent). GIF is excluded because the canvas
+  // re-encode keeps only the first frame, so an animated GIF would silently
+  // go still — better to reject than surprise.
+  const ACCEPT = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
+
+  // ── Shared sidecar store ────────────────────────────────────────────────
+  // One fetch + immediate write-on-change for every <image-slot> on the
+  // page. Reads via fetch() so viewing works anywhere the HTML and sidecar
+  // are served together; writes go through window.omelette.writeFile, which
+  // the host allowlists to *.state.json basenames only.
+  const subs = new Set();
+  let slots = {};
+  // ids explicitly cleared before the sidecar fetch resolved — otherwise
+  // the merge below can't tell "never set" from "just deleted" and would
+  // resurrect the sidecar's stale value.
+  const tombstones = new Set();
+  let loaded = false;
+  let loadP = null;
+
+  function load() {
+    if (loadP) return loadP;
+    loadP = fetch(STATE_FILE)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        // Merge: sidecar loses to any in-memory change that raced ahead of
+        // the fetch (drop or clear) so neither is clobbered by hydration.
+        if (j && typeof j === 'object') {
+          const merged = Object.assign({}, j, slots);
+          // A framing-only write that raced ahead of hydration must not
+          // drop a user image that's only on disk — inherit u from the
+          // sidecar for any in-memory entry that lacks one.
+          for (const k in slots) {
+            if (merged[k] && !merged[k].u && j[k]) {
+              merged[k].u = typeof j[k] === 'string' ? j[k] : j[k].u;
+            }
+          }
+          for (const id of tombstones) delete merged[id];
+          slots = merged;
+        }
+        tombstones.clear();
+      })
+      .catch(() => {})
+      .then(() => { loaded = true; subs.forEach((fn) => fn()); });
+    return loadP;
+  }
+
+  // Serialize writes so two near-simultaneous drops on different slots
+  // can't reorder at the backend and leave the sidecar with only the
+  // first. A save requested mid-flight just marks dirty and re-fires on
+  // completion with the then-current slots.
+  let saving = false;
+  let saveDirty = false;
+  function save() {
+    if (saving) { saveDirty = true; return; }
+    const w = window.omelette && window.omelette.writeFile;
+    if (!w) return;
+    saving = true;
+    Promise.resolve(w(STATE_FILE, JSON.stringify(slots)))
+      .catch(() => {})
+      .then(() => { saving = false; if (saveDirty) { saveDirty = false; save(); } });
+  }
+
+  const S_MAX = 5;
+  const clampS = (s) => Math.max(1, Math.min(S_MAX, s));
+
+  // Normalize a stored slot value. Pre-reframe sidecars stored a bare
+  // data-URL string; newer ones store {u, s, x, y}. Either shape is valid.
+  function getSlot(id) {
+    const v = slots[id];
+    if (!v) return null;
+    return typeof v === 'string' ? { u: v, s: 1, x: 0, y: 0 } : v;
+  }
+
+  function setSlot(id, val) {
+    if (!id) return;
+    if (val) { slots[id] = val; tombstones.delete(id); }
+    else { delete slots[id]; if (!loaded) tombstones.add(id); }
+    subs.forEach((fn) => fn());
+    // A drop is rare + high-value — write immediately so nav-away can't lose
+    // it. Gate on the initial read so we don't overwrite a sidecar we haven't
+    // merged yet; the merge in load() keeps this change once the read lands.
+    if (loaded) save(); else load().then(save);
+  }
+
+  // ── Image downscale ─────────────────────────────────────────────────────
+  // Encode through a canvas so the sidecar carries resized bytes, not the
+  // raw upload. Longest side is capped at 2× the slot's rendered width
+  // (retina) and at MAX_DIM. WebP keeps alpha and is ~10× smaller than PNG
+  // for photos, so there's no need for per-image format picking.
+  async function toDataUrl(file, targetW) {
+    const bitmap = await createImageBitmap(file);
+    try {
+      const cap = Math.min(MAX_DIM, Math.max(1, Math.round(targetW * 2)) || MAX_DIM);
+      const scale = Math.min(1, cap / Math.max(bitmap.width, bitmap.height));
+      const w = Math.max(1, Math.round(bitmap.width * scale));
+      const h = Math.max(1, Math.round(bitmap.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, w, h);
+      return canvas.toDataURL('image/webp', 0.85);
+    } finally {
+      bitmap.close && bitmap.close();
+    }
+  }
+
+  // ── Custom element ──────────────────────────────────────────────────────
+  const stylesheet =
+    ':host{display:inline-block;position:relative;vertical-align:top;' +
+    '  font:13px/1.3 system-ui,-apple-system,sans-serif;color:rgba(0,0,0,.55);width:240px;height:160px}' +
+    '.frame{position:absolute;inset:0;overflow:hidden;background:rgba(0,0,0,.04)}' +
+    // .frame img (clipped) and .spill (unclipped ghost + handles) share the
+    // same left/top/width/height in frame-%, computed by _applyView(), so the
+    // inside-mask crop and the outside-mask spill stay pixel-aligned.
+    '.frame img{position:absolute;max-width:none;transform:translate(-50%,-50%);' +
+    '  -webkit-user-drag:none;user-select:none;touch-action:none}' +
+    // Reframe mode (double-click): the full image spills past the mask. The
+    // spill layer is sized to the IMAGE bounds so its corners are where the
+    // resize handles belong. The ghost <img> inside is translucent; the real
+    // clipped <img> underneath shows the opaque in-mask crop.
+    '.spill{position:absolute;transform:translate(-50%,-50%);display:none;z-index:1;' +
+    '  cursor:grab;touch-action:none}' +
+    ':host([data-panning]) .spill{cursor:grabbing}' +
+    '.spill .ghost{position:absolute;inset:0;width:100%;height:100%;opacity:.35;' +
+    '  pointer-events:none;-webkit-user-drag:none;user-select:none;' +
+    '  box-shadow:0 0 0 1px rgba(0,0,0,.2),0 12px 32px rgba(0,0,0,.2)}' +
+    '.spill .handle{position:absolute;width:12px;height:12px;border-radius:50%;' +
+    '  background:#fff;box-shadow:0 0 0 1.5px #c96442,0 1px 3px rgba(0,0,0,.3);' +
+    '  transform:translate(-50%,-50%)}' +
+    '.spill .handle[data-c=nw]{left:0;top:0;cursor:nwse-resize}' +
+    '.spill .handle[data-c=ne]{left:100%;top:0;cursor:nesw-resize}' +
+    '.spill .handle[data-c=sw]{left:0;top:100%;cursor:nesw-resize}' +
+    '.spill .handle[data-c=se]{left:100%;top:100%;cursor:nwse-resize}' +
+    ':host([data-reframe]){z-index:10}' +
+    ':host([data-reframe]) .spill{display:block}' +
+    ':host([data-reframe]) .frame{box-shadow:0 0 0 2px #c96442}' +
+    '.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;' +
+    '  justify-content:center;gap:6px;text-align:center;padding:12px;box-sizing:border-box;' +
+    '  cursor:pointer;user-select:none}' +
+    '.empty svg{opacity:.45}' +
+    '.empty .cap{max-width:90%;font-weight:500;letter-spacing:.01em}' +
+    '.empty .sub{font-size:11px}' +
+    '.empty .sub u{text-underline-offset:2px;text-decoration-color:rgba(0,0,0,.25)}' +
+    '.empty:hover .sub u{color:rgba(0,0,0,.75);text-decoration-color:currentColor}' +
+    ':host([data-over]) .frame{outline:2px solid #c96442;outline-offset:-2px;' +
+    '  background:rgba(201,100,66,.10)}' +
+    '.ring{position:absolute;inset:0;pointer-events:none;border:1.5px dashed rgba(0,0,0,.25);' +
+    '  transition:border-color .12s}' +
+    ':host([data-over]) .ring{border-color:#c96442}' +
+    ':host([data-filled]) .ring{display:none}' +
+    // Controls sit BELOW the mask (top:100%), absolutely positioned so the
+    // author-declared slot height is unaffected. The gap is padding, not a
+    // top offset, so the hover target stays contiguous with the frame.
+    '.ctl{position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:8px;' +
+    '  display:flex;gap:6px;opacity:0;pointer-events:none;transition:opacity .12s;z-index:2;' +
+    '  white-space:nowrap}' +
+    ':host([data-filled][data-editable]:hover) .ctl,:host([data-reframe]) .ctl' +
+    '  {opacity:1;pointer-events:auto}' +
+    '.ctl button{appearance:none;border:0;border-radius:6px;padding:5px 10px;cursor:pointer;' +
+    '  background:rgba(0,0,0,.65);color:#fff;font:11px/1 system-ui,-apple-system,sans-serif;' +
+    '  backdrop-filter:blur(6px)}' +
+    '.ctl button:hover{background:rgba(0,0,0,.8)}' +
+    '.err{position:absolute;left:8px;bottom:8px;right:8px;color:#b3261e;font-size:11px;' +
+    '  background:rgba(255,255,255,.85);padding:4px 6px;border-radius:5px;pointer-events:none}';
+
+  const icon =
+    '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>' +
+    '<path d="m21 15-5-5L5 21"/></svg>';
+
+  class ImageSlot extends HTMLElement {
+    static get observedAttributes() {
+      return ['shape', 'radius', 'mask', 'fit', 'position', 'placeholder', 'src', 'id'];
+    }
+
+    constructor() {
+      super();
+      const root = this.attachShadow({ mode: 'open' });
+      // .spill and .ctl sit OUTSIDE .frame so overflow:hidden + border-radius
+      // on the frame (circle, pill, rounded) can't clip them.
+      root.innerHTML =
+        '<style>' + stylesheet + '</style>' +
+        '<div class="frame" part="frame">' +
+        '  <img part="image" alt="" draggable="false" style="display:none">' +
+        '  <div class="empty" part="empty">' + icon +
+        '    <div class="cap"></div>' +
+        '    <div class="sub">or <u>browse files</u></div></div>' +
+        '  <div class="ring" part="ring"></div>' +
+        '</div>' +
+        '<div class="spill">' +
+        '  <img class="ghost" alt="" draggable="false">' +
+        '  <div class="handle" data-c="nw"></div><div class="handle" data-c="ne"></div>' +
+        '  <div class="handle" data-c="sw"></div><div class="handle" data-c="se"></div>' +
+        '</div>' +
+        '<div class="ctl"><button data-act="replace" title="Replace image">Replace</button>' +
+        '  <button data-act="clear" title="Remove image">Remove</button></div>' +
+        '<input type="file" accept="' + ACCEPT.join(',') + '" hidden>';
+      this._frame = root.querySelector('.frame');
+      this._ring = root.querySelector('.ring');
+      this._img = root.querySelector('.frame img');
+      this._empty = root.querySelector('.empty');
+      this._cap = root.querySelector('.cap');
+      this._sub = root.querySelector('.sub');
+      this._spill = root.querySelector('.spill');
+      this._ghost = root.querySelector('.ghost');
+      this._err = null;
+      this._input = root.querySelector('input');
+      this._depth = 0;
+      this._gen = 0;
+      this._view = { s: 1, x: 0, y: 0 };
+      this._subFn = () => this._render();
+      // Shadow-DOM listeners live with the shadow DOM — bound once here so
+      // disconnect/reconnect (e.g. React remount) doesn't stack handlers.
+      this._empty.addEventListener('click', () => this._input.click());
+      root.addEventListener('click', (e) => {
+        const act = e.target && e.target.getAttribute && e.target.getAttribute('data-act');
+        if (act === 'replace') { this._exitReframe(true); this._input.click(); }
+        if (act === 'clear') {
+          this._exitReframe(false);
+          this._gen++;
+          this._local = null;
+          if (this.id) setSlot(this.id, null); else this._render();
+        }
+      });
+      this._input.addEventListener('change', () => {
+        const f = this._input.files && this._input.files[0];
+        if (f) this._ingest(f);
+        this._input.value = '';
+      });
+      // naturalWidth/Height aren't known until load — re-apply so the cover
+      // baseline is computed from real dimensions, not the 100%×100% fallback.
+      this._img.addEventListener('load', () => this._applyView());
+      // Gated on editable + fit=cover so share links and contain/fill slots
+      // stay static.
+      this.addEventListener('dblclick', (e) => {
+        if (!this.hasAttribute('data-editable') || !this._reframes()) return;
+        e.preventDefault();
+        if (this.hasAttribute('data-reframe')) this._exitReframe(true);
+        else this._enterReframe();
+      });
+      // Pan + resize both originate on the spill layer. A handle pointerdown
+      // drives an aspect-locked resize anchored at the opposite corner; any
+      // other pointerdown on the spill pans. Offsets are frame-% so a
+      // reframed slot survives responsive resize / PPTX export.
+      this._spill.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0 || !this.hasAttribute('data-reframe')) return;
+        e.preventDefault();
+        e.stopPropagation();
+        this._spill.setPointerCapture(e.pointerId);
+        const rect = this.getBoundingClientRect();
+        const fw = rect.width || 1, fh = rect.height || 1;
+        const corner = e.target.getAttribute && e.target.getAttribute('data-c');
+        let move;
+        if (corner) {
+          // Resize about the OPPOSITE corner. Viewport-px throughout (rect
+          // fw/fh, not clientWidth) so the math survives a transform:scale()
+          // ancestor — deck_stage renders slides scaled-to-fit.
+          const iw = this._img.naturalWidth || 1, ih = this._img.naturalHeight || 1;
+          const base = Math.max(fw / iw, fh / ih);
+          const sx = corner.includes('e') ? 1 : -1;
+          const sy = corner.includes('s') ? 1 : -1;
+          const s0 = this._view.s;
+          const w0 = iw * base * s0, h0 = ih * base * s0;
+          const cx0 = (50 + this._view.x) / 100 * fw;
+          const cy0 = (50 + this._view.y) / 100 * fh;
+          const ox = cx0 - sx * w0 / 2, oy = cy0 - sy * h0 / 2;
+          const diag0 = Math.hypot(w0, h0);
+          const ux = sx * w0 / diag0, uy = sy * h0 / diag0;
+          move = (ev) => {
+            const proj = (ev.clientX - rect.left - ox) * ux +
+                         (ev.clientY - rect.top - oy) * uy;
+            const s = clampS(s0 * proj / diag0);
+            const d = diag0 * s / s0;
+            this._view.s = s;
+            this._view.x = (ox + ux * d / 2) / fw * 100 - 50;
+            this._view.y = (oy + uy * d / 2) / fh * 100 - 50;
+            this._clampView();
+            this._applyView();
+          };
+        } else {
+          this.setAttribute('data-panning', '');
+          const start = { px: e.clientX, py: e.clientY, x: this._view.x, y: this._view.y };
+          move = (ev) => {
+            this._view.x = start.x + (ev.clientX - start.px) / fw * 100;
+            this._view.y = start.y + (ev.clientY - start.py) / fh * 100;
+            this._clampView();
+            this._applyView();
+          };
+        }
+        const up = () => {
+          try { this._spill.releasePointerCapture(e.pointerId); } catch {}
+          this._spill.removeEventListener('pointermove', move);
+          this._spill.removeEventListener('pointerup', up);
+          this._spill.removeEventListener('pointercancel', up);
+          this.removeAttribute('data-panning');
+          this._dragUp = null;
+        };
+        // Stashed so _exitReframe (Escape / outside-click mid-drag) can
+        // tear the capture + listeners down synchronously.
+        this._dragUp = up;
+        this._spill.addEventListener('pointermove', move);
+        this._spill.addEventListener('pointerup', up);
+        this._spill.addEventListener('pointercancel', up);
+      });
+      // Wheel zoom stays available inside reframe mode as a trackpad nicety —
+      // zooms toward the cursor (offset' = cursor·(1-k) + offset·k).
+      this.addEventListener('wheel', (e) => {
+        if (!this.hasAttribute('data-reframe')) return;
+        e.preventDefault();
+        const r = this.getBoundingClientRect();
+        const cx = (e.clientX - r.left) / r.width * 100 - 50;
+        const cy = (e.clientY - r.top) / r.height * 100 - 50;
+        const prev = this._view.s;
+        const next = clampS(prev * Math.pow(1.0015, -e.deltaY));
+        if (next === prev) return;
+        const k = next / prev;
+        this._view.s = next;
+        this._view.x = cx * (1 - k) + this._view.x * k;
+        this._view.y = cy * (1 - k) + this._view.y * k;
+        this._clampView();
+        this._applyView();
+      }, { passive: false });
+    }
+
+    connectedCallback() {
+      // Warn once per page — an id-less slot works for the session but
+      // cannot persist, and two id-less slots would share nothing.
+      if (!this.id && !ImageSlot._warned) {
+        ImageSlot._warned = true;
+        console.warn('<image-slot> without an id will not persist its dropped image.');
+      }
+      this.addEventListener('dragenter', this);
+      this.addEventListener('dragover', this);
+      this.addEventListener('dragleave', this);
+      this.addEventListener('drop', this);
+      subs.add(this._subFn);
+      // width%/height% in _applyView encode the frame aspect at call time —
+      // a host resize (responsive grid, pane divider) would stretch the
+      // image until the next _render. Re-render on size change: _render()
+      // re-seeds _view from stored before clamp/apply, so a shrink→grow
+      // cycle round-trips instead of ratcheting x/y toward the narrower
+      // frame's clamp range.
+      this._ro = new ResizeObserver(() => this._render());
+      this._ro.observe(this);
+      load();
+      this._render();
+    }
+
+    disconnectedCallback() {
+      subs.delete(this._subFn);
+      this.removeEventListener('dragenter', this);
+      this.removeEventListener('dragover', this);
+      this.removeEventListener('dragleave', this);
+      this.removeEventListener('drop', this);
+      if (this._ro) { this._ro.disconnect(); this._ro = null; }
+      this._exitReframe(false);
+    }
+
+    _enterReframe() {
+      if (this.hasAttribute('data-reframe')) return;
+      this.setAttribute('data-reframe', '');
+      this._applyView();
+      // Close on click outside (the spill handler stopPropagation()s so
+      // in-image drags don't reach this) and on Escape. Listeners are held
+      // on the instance so _exitReframe / disconnectedCallback can detach
+      // exactly what was attached.
+      this._outside = (e) => {
+        if (e.composedPath && e.composedPath().includes(this)) return;
+        this._exitReframe(true);
+      };
+      this._esc = (e) => { if (e.key === 'Escape') this._exitReframe(true); };
+      document.addEventListener('pointerdown', this._outside, true);
+      document.addEventListener('keydown', this._esc, true);
+    }
+
+    _exitReframe(commit) {
+      if (!this.hasAttribute('data-reframe')) return;
+      if (this._dragUp) this._dragUp();
+      this.removeAttribute('data-reframe');
+      this.removeAttribute('data-panning');
+      if (this._outside) document.removeEventListener('pointerdown', this._outside, true);
+      if (this._esc) document.removeEventListener('keydown', this._esc, true);
+      this._outside = this._esc = null;
+      if (commit) this._commitView();
+    }
+
+    attributeChangedCallback() { if (this.shadowRoot) this._render(); }
+
+    // handleEvent — one listener object for all four drag events keeps the
+    // add/remove symmetric and the depth counter correct.
+    handleEvent(e) {
+      if (e.type === 'dragenter' || e.type === 'dragover') {
+        // Without preventDefault the browser never fires 'drop'.
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+        if (e.type === 'dragenter') this._depth++;
+        this.setAttribute('data-over', '');
+      } else if (e.type === 'dragleave') {
+        // dragenter/leave fire for every descendant crossing — count depth
+        // so hovering the icon inside the empty state doesn't flicker.
+        if (--this._depth <= 0) { this._depth = 0; this.removeAttribute('data-over'); }
+      } else if (e.type === 'drop') {
+        e.preventDefault();
+        e.stopPropagation();
+        this._depth = 0;
+        this.removeAttribute('data-over');
+        const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (f) this._ingest(f);
+      }
+    }
+
+    async _ingest(file) {
+      this._setError(null);
+      if (!file || ACCEPT.indexOf(file.type) < 0) {
+        this._setError('Drop a PNG, JPEG, WebP, or AVIF image.');
+        return;
+      }
+      // toDataUrl can take hundreds of ms on a large photo. A Clear or a
+      // newer drop during that window would be clobbered when this await
+      // resumes — bump + capture a generation so stale encodes bail.
+      const gen = ++this._gen;
+      try {
+        const w = this.clientWidth || this.offsetWidth || MAX_DIM;
+        const url = await toDataUrl(file, w);
+        if (gen !== this._gen) return;
+        // Only exit reframe once the new image is in hand — a rejected type
+        // or decode failure leaves the in-progress crop untouched.
+        this._exitReframe(false);
+        const val = { u: url, s: 1, x: 0, y: 0 };
+        setSlot(this.id || '', val);
+        // Keep a session-local copy for id-less slots so the drop still
+        // shows, even though it cannot persist.
+        if (!this.id) { this._local = val; this._render(); }
+      } catch (err) {
+        if (gen !== this._gen) return;
+        this._setError('Could not read that image.');
+        console.warn('<image-slot> ingest failed:', err);
+      }
+    }
+
+    _setError(msg) {
+      if (this._err) { this._err.remove(); this._err = null; }
+      if (!msg) return;
+      const d = document.createElement('div');
+      d.className = 'err'; d.textContent = msg;
+      this.shadowRoot.appendChild(d);
+      this._err = d;
+      setTimeout(() => { if (this._err === d) { d.remove(); this._err = null; } }, 3000);
+    }
+
+    // Reframing (pan/resize) is only meaningful for fit=cover — contain/fill
+    // keep the old object-fit path and double-click is a no-op.
+    _reframes() {
+      return this.hasAttribute('data-filled') &&
+        (this.getAttribute('fit') || 'cover') === 'cover';
+    }
+
+    // Cover-baseline geometry, shared by clamp/apply/resize. Null until the
+    // img has loaded (naturalWidth is 0 before that) or when the slot has no
+    // layout box — ResizeObserver fires with a 0×0 rect under display:none,
+    // and clamping against a degenerate 1×1 frame would silently pull the
+    // stored pan toward zero.
+    _geom() {
+      const iw = this._img.naturalWidth, ih = this._img.naturalHeight;
+      const fw = this.clientWidth, fh = this.clientHeight;
+      if (!iw || !ih || !fw || !fh) return null;
+      return { iw, ih, fw, fh, base: Math.max(fw / iw, fh / ih) };
+    }
+
+    _clampView() {
+      // Pan range on each axis is half the overflow past the frame edge.
+      const g = this._geom();
+      if (!g) return;
+      const mx = Math.max(0, (g.iw * g.base * this._view.s / g.fw - 1) * 50);
+      const my = Math.max(0, (g.ih * g.base * this._view.s / g.fh - 1) * 50);
+      this._view.x = Math.max(-mx, Math.min(mx, this._view.x));
+      this._view.y = Math.max(-my, Math.min(my, this._view.y));
+    }
+
+    _applyView() {
+      const g = this._geom();
+      const fit = this.getAttribute('fit') || 'cover';
+      if (fit !== 'cover' || !g) {
+        // Non-cover, or dimensions not known yet (before img load).
+        this._img.style.width = '100%';
+        this._img.style.height = '100%';
+        this._img.style.left = '50%';
+        this._img.style.top = '50%';
+        this._img.style.objectFit = fit;
+        this._img.style.objectPosition = this.getAttribute('position') || '50% 50%';
+        return;
+      }
+      // Cover baseline: img fills the frame on its tighter axis at s=1, so
+      // pan works immediately on the overflowing axis without zooming first.
+      // Width/height and left/top are all frame-% — depends only on the
+      // frame aspect ratio, so a responsive resize keeps the same crop. The
+      // spill layer mirrors the same box so its corners = image corners.
+      const k = g.base * this._view.s;
+      const w = (g.iw * k / g.fw * 100) + '%';
+      const h = (g.ih * k / g.fh * 100) + '%';
+      const l = (50 + this._view.x) + '%';
+      const t = (50 + this._view.y) + '%';
+      this._img.style.width = w; this._img.style.height = h;
+      this._img.style.left = l; this._img.style.top = t;
+      this._img.style.objectFit = '';
+      this._spill.style.width = w; this._spill.style.height = h;
+      this._spill.style.left = l; this._spill.style.top = t;
+    }
+
+    _commitView() {
+      const v = { s: this._view.s, x: this._view.x, y: this._view.y };
+      if (this._userUrl) v.u = this._userUrl;
+      // Framing-only (no u) persists too so an author-src slot remembers its
+      // crop; clearing the sidecar still falls through to src=.
+      if (this.id) setSlot(this.id, v);
+      else { this._local = v; }
+    }
+
+    _render() {
+      // Shape / mask. Presets use border-radius so the dashed ring can
+      // follow the rounded outline; clip-path is only applied for an
+      // explicit `mask` (the ring is hidden there since a rectangle
+      // dashed border chopped by an arbitrary polygon looks broken).
+      const mask = this.getAttribute('mask');
+      const shape = (this.getAttribute('shape') || 'rounded').toLowerCase();
+      let radius = '';
+      if (shape === 'circle') radius = '50%';
+      else if (shape === 'pill') radius = '9999px';
+      else if (shape === 'rounded') {
+        const n = parseFloat(this.getAttribute('radius'));
+        radius = (Number.isFinite(n) ? n : 12) + 'px';
+      }
+      this._frame.style.borderRadius = mask ? '' : radius;
+      this._frame.style.clipPath = mask || '';
+      this._ring.style.borderRadius = mask ? '' : radius;
+      this._ring.style.display = mask ? 'none' : '';
+
+      // Controls and reframe entry gate on this so share links stay read-only.
+      const editable = !!(window.omelette && window.omelette.writeFile);
+      this.toggleAttribute('data-editable', editable);
+      this._sub.style.display = editable ? '' : 'none';
+
+      // Content. The sidecar is also writable by the agent's write_file
+      // tool, so its value isn't guaranteed canvas-originated — only accept
+      // data:image/ URLs from it. The `src` attribute is author-controlled
+      // (Claude wrote it into the HTML) so it passes through unchanged.
+      let stored = this.id ? getSlot(this.id) : this._local;
+      if (stored && stored.u && !/^data:image\//i.test(stored.u)) stored = null;
+      const srcAttr = this.getAttribute('src') || '';
+      this._userUrl = (stored && stored.u) || null;
+      const url = this._userUrl || srcAttr;
+      // Don't clobber an in-flight reframe with a store-triggered re-render.
+      if (!this.hasAttribute('data-reframe')) {
+        this._view = {
+          s: stored && Number.isFinite(stored.s) ? clampS(stored.s) : 1,
+          x: stored && Number.isFinite(stored.x) ? stored.x : 0,
+          y: stored && Number.isFinite(stored.y) ? stored.y : 0,
+        };
+      }
+      this._cap.textContent = this.getAttribute('placeholder') || 'Drop an image';
+      // Toggle via style.display — the [hidden] attribute alone loses to
+      // the display:flex / display:block rules in the stylesheet above.
+      if (url) {
+        if (this._img.getAttribute('src') !== url) {
+          this._img.src = url;
+          this._ghost.src = url;
+        }
+        this._img.style.display = 'block';
+        this._empty.style.display = 'none';
+        this.setAttribute('data-filled', '');
+        this._clampView();
+        this._applyView();
+      } else {
+        this._img.style.display = 'none';
+        this._img.removeAttribute('src');
+        this._ghost.removeAttribute('src');
+        this._empty.style.display = 'flex';
+        this.removeAttribute('data-filled');
+      }
+    }
+  }
+
+  if (!customElements.get('image-slot')) {
+    customElements.define('image-slot', ImageSlot);
+  }
+})();
+
+</script>
+<script type="text/babel">
+// Icon set — single-stroke, 1.5px, 24x24 viewBox
+const Icon = ({ children, size = 24, strokeWidth = 1.6 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+
+const IconFactura = (p) => (
+  <Icon {...p}>
+    <path d="M6 3h9l3 3v15l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2L6 21V3Z"/>
+    <path d="M9 9h6M9 13h6M9 17h3"/>
+  </Icon>
+);
+const IconBook = (p) => (
+  <Icon {...p}>
+    <path d="M4 4h9a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4Z"/>
+    <path d="M16 4h4v13a3 3 0 0 1-3 3"/>
+    <path d="M8 9h5M8 13h5"/>
+  </Icon>
+);
+const IconBox = (p) => (
+  <Icon {...p}>
+    <path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z"/>
+    <path d="m3 7.5 9 4.5 9-4.5M12 12v9"/>
+  </Icon>
+);
+const IconUsers = (p) => (
+  <Icon {...p}>
+    <circle cx="9" cy="8" r="3.5"/>
+    <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+    <path d="M16 4.5a3.5 3.5 0 0 1 0 7M21 20c0-2.6-1.7-4.9-4-5.7"/>
+  </Icon>
+);
+const IconChart = (p) => (
+  <Icon {...p}>
+    <path d="M4 4v16h16"/>
+    <path d="M8 14v3M12 10v7M16 6v11"/>
+  </Icon>
+);
+const IconCard = (p) => (
+  <Icon {...p}>
+    <rect x="3" y="6" width="18" height="13" rx="2"/>
+    <path d="M3 10h18M7 15h4"/>
+  </Icon>
+);
+const IconBolt = (p) => (
+  <Icon {...p}>
+    <path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z"/>
+  </Icon>
+);
+const IconShield = (p) => (
+  <Icon {...p}>
+    <path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"/>
+    <path d="m9 12 2 2 4-4"/>
+  </Icon>
+);
+const IconPlug = (p) => (
+  <Icon {...p}>
+    <path d="M9 2v4M15 2v4"/>
+    <path d="M7 6h10v6a5 5 0 0 1-10 0V6Z"/>
+    <path d="M12 17v5"/>
+  </Icon>
+);
+const IconClock = (p) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 7v5l3 2"/>
+  </Icon>
+);
+const IconChat = (p) => (
+  <Icon {...p}>
+    <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-4 4v-4H6a2 2 0 0 1-2-2V6Z"/>
+  </Icon>
+);
+const IconSearch = (p) => (
+  <Icon {...p}>
+    <circle cx="11" cy="11" r="6"/>
+    <path d="m20 20-4.3-4.3"/>
+  </Icon>
+);
+const IconCheck = (p) => (
+  <Icon {...p} strokeWidth={2}>
+    <path d="m5 12 4 4 10-10"/>
+  </Icon>
+);
+const IconArrowRight = (p) => (
+  <Icon {...p}>
+    <path d="M5 12h14M13 6l6 6-6 6"/>
+  </Icon>
+);
+const IconArrowUpRight = (p) => (
+  <Icon {...p}>
+    <path d="M7 17 17 7M9 7h8v8"/>
+  </Icon>
+);
+const IconStar = (p) => (
+  <Icon {...p} strokeWidth={0}>
+    <path d="m12 3 2.6 6 6.4.6-4.8 4.4 1.4 6.4-5.6-3.4-5.6 3.4 1.4-6.4L3 9.6 9.4 9 12 3Z" fill="currentColor"/>
+  </Icon>
+);
+const IconPlus = (p) => (
+  <Icon {...p}>
+    <path d="M12 5v14M5 12h14"/>
+  </Icon>
+);
+const IconMenu = (p) => (
+  <Icon {...p}>
+    <path d="M4 7h16M4 12h16M4 17h16"/>
+  </Icon>
+);
+const IconClose = (p) => (
+  <Icon {...p}>
+    <path d="M6 6l12 12M18 6 6 18"/>
+  </Icon>
+);
+const IconPlay = (p) => (
+  <Icon {...p} strokeWidth={0}>
+    <path d="M8 5v14l11-7L8 5Z" fill="currentColor"/>
+  </Icon>
+);
+const IconSparkle = (p) => (
+  <Icon {...p}>
+    <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/>
+  </Icon>
+);
+const IconGlobe = (p) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+  </Icon>
+);
+
+const IconX = (p) => (
+  <Icon {...p} strokeWidth={1.8}>
+    <path d="M4 4l16 16M20 4 4 20"/>
+  </Icon>
+);
+const IconInstagram = (p) => (
+  <Icon {...p}>
+    <rect x="3" y="3" width="18" height="18" rx="5"/>
+    <circle cx="12" cy="12" r="4"/>
+    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+  </Icon>
+);
+const IconLinkedin = (p) => (
+  <Icon {...p}>
+    <rect x="3" y="3" width="18" height="18" rx="3"/>
+    <path d="M8 10v7M8 7.5v.5M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/>
+  </Icon>
+);
+const IconYoutube = (p) => (
+  <Icon {...p}>
+    <rect x="2.5" y="5.5" width="19" height="13" rx="3.5"/>
+    <path d="m10 9 5 3-5 3V9Z" fill="currentColor" stroke="none"/>
+  </Icon>
+);
+
+// === Brand logo — PymeStudio =============================================
+// 4-piece "S" inscribed in a horizontal hexagon. Recreated from brand ref.
+const SumaLogo = ({ size = 32, color = "#1E4538" }) => (
+  <svg width={size} height={size * (200/220)} viewBox="0 0 220 200" fill="none"
+       aria-label="PymeStudio" role="img">
+    <g fill={color}>
+      {/* TOP-LEFT chunky pentagon — slanted top, vertical right, curved bottom */}
+      <path d="
+        M 50 64
+        L 104 40
+        C 107 39, 110 41, 110 44
+        L 110 110
+        C 110 116, 102 117, 92 115
+        C 74 112, 56 117, 48 113
+        C 45 112, 44 109, 45 106
+        L 50 64 Z
+      "/>
+      {/* TOP-RIGHT leaf — peak upper-right, tail at center */}
+      <path d="
+        M 115 110
+        C 115 92, 128 68, 150 50
+        C 165 40, 180 36, 184 46
+        C 186 56, 174 70, 158 82
+        C 144 96, 130 106, 122 110
+        C 117 111, 114 112, 115 110 Z
+      "/>
+      {/* Bottom half = 180° rotation around (110, 100) */}
+      <g transform="rotate(180 110 100)">
+        <path d="
+          M 50 64
+          L 104 40
+          C 107 39, 110 41, 110 44
+          L 110 110
+          C 110 116, 102 117, 92 115
+          C 74 112, 56 117, 48 113
+          C 45 112, 44 109, 45 106
+          L 50 64 Z
+        "/>
+        <path d="
+          M 115 110
+          C 115 92, 128 68, 150 50
+          C 165 40, 180 36, 184 46
+          C 186 56, 174 70, 158 82
+          C 144 96, 130 106, 122 110
+          C 117 111, 114 112, 115 110 Z
+        "/>
+      </g>
+    </g>
+  </svg>
+);
+
+// Brand wordmark — logo + "PymeStudio" type
+const SumaWordmark = ({ size = 28, color, gap = 10 }) => (
+  <span style={{display:'inline-flex', alignItems:'center', gap:`${gap}px`, lineHeight:1}}>
+    <SumaLogo size={size} color={color}/>
+    <span style={{
+      fontWeight:600, letterSpacing:'-0.02em', fontSize:`${Math.round(size * 0.72)}px`,
+      fontFeatureSettings:'"ss01"',
+    }}>PymeStudio</span>
+  </span>
+);
+
+Object.assign(window, {
+  IconFactura, IconBook, IconBox, IconUsers, IconChart, IconCard,
+  IconBolt, IconShield, IconPlug, IconClock, IconChat, IconSearch,
+  IconCheck, IconArrowRight, IconArrowUpRight, IconStar, IconPlus,
+  IconMenu, IconClose, IconPlay, IconSparkle, IconGlobe,
+  IconX, IconInstagram, IconLinkedin, IconYoutube,
+  SumaLogo, SumaWordmark,
+});
+
+</script>
+<script type="text/babel">
+// === Nav + Drawer =========================================================
+const { useState, useEffect, useRef } = React;
+
+function Nav({ onOpenMenu, scrolled }) {
+  return (
+    <header className={"nav" + (scrolled ? " scrolled" : "")}>
+      <div className="container nav__inner">
+        <a href="index.html" className="nav__logo">
+          <span className="nav__logo-mark"><SumaLogo size={28}/></span>
+          <span>PymeStudio</span>
+        </a>
+        <nav className="nav__links">
+          <div className="nav__item">
+            <a href="index.html#productos">Productos ▾</a>
+            <div className="nav__dropdown">
+              <a className="nav__dropdown-item" href="factura-facil.html">
+                <span className="nav__dropdown-icon"><IconFactura size={18}/></span>
+                <span>
+                  <div className="nav__dropdown-title">FacturaFácil</div>
+                  <div className="nav__dropdown-desc">Facturación ARCA con CAE real · Mono y RI</div>
+                </span>
+              </a>
+              <a className="nav__dropdown-item" href="dashboard-bi.html">
+                <span className="nav__dropdown-icon"><IconChart size={18}/></span>
+                <span>
+                  <div className="nav__dropdown-title">Dashboard BI</div>
+                  <div className="nav__dropdown-desc">Visibilidad financiera + asesor IA</div>
+                </span>
+              </a>
+              <a className="nav__dropdown-item" href="retail.html">
+                <span className="nav__dropdown-icon"><IconCard size={18}/></span>
+                <span>
+                  <div className="nav__dropdown-title">Retail</div>
+                  <div className="nav__dropdown-desc">POS + retail + stock para comercios</div>
+                </span>
+              </a>
+              <a className="nav__dropdown-item" href="agropecuario.html">
+                <span className="nav__dropdown-icon"><IconBox size={18}/></span>
+                <span>
+                  <div className="nav__dropdown-title">Agropecuario</div>
+                  <div className="nav__dropdown-desc">Gestión de campo, hacienda y costos</div>
+                </span>
+              </a>
+            </div>
+          </div>
+          <a href="index.html#como-funciona">Cómo funciona</a>
+          <a href="index.html#servicios">Servicios</a>
+          <a href="index.html#precios">Precios</a>
+          <a href="index.html#recursos">Recursos</a>
+          <a href="index.html#contacto">Soporte</a>
+        </nav>
+        <div className="nav__cta">
+          <a href="#" className="btn btn--ghost">Ingresar</a>
+          <a href="index.html#contacto" className="btn btn--primary">
+            Probar gratis <IconArrowRight size={16} />
+          </a>
+          <button className="nav__menu-btn" aria-label="Abrir menú" onClick={onOpenMenu}>
+            <IconMenu size={20} />
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function Drawer({ open, onClose }) {
+  return (
+    <div className={"drawer" + (open ? " open" : "")}>
+      <div className="container" style={{display:'flex', flexDirection:'column', flex:1}}>
+        <div className="drawer__head">
+          <a href="index.html" className="nav__logo">
+            <span className="nav__logo-mark"><SumaLogo size={28}/></span>
+            <span>PymeStudio</span>
+          </a>
+          <button className="nav__menu-btn" style={{display:'inline-flex'}} onClick={onClose} aria-label="Cerrar menú">
+            <IconClose size={20} />
+          </button>
+        </div>
+        <nav className="drawer__links">
+          <a onClick={onClose} href="factura-facil.html">FacturaFácil</a>
+          <a onClick={onClose} href="dashboard-bi.html">Dashboard BI</a>
+          <a onClick={onClose} href="retail.html">Retail</a>
+          <a onClick={onClose} href="agropecuario.html">Agropecuario</a>
+          <a onClick={onClose} href="index.html#como-funciona">Cómo funciona</a>
+          <a onClick={onClose} href="index.html#servicios">Servicios</a>
+          <a onClick={onClose} href="index.html#precios">Precios</a>
+          <a onClick={onClose} href="index.html#recursos">Recursos</a>
+          <a onClick={onClose} href="index.html#contacto">Soporte</a>
+        </nav>
+        <div className="drawer__cta">
+          <a href="#" className="btn btn--ghost" style={{flex:1}}>Ingresar</a>
+          <a href="#" className="btn btn--primary" style={{flex:1}}>Probar gratis</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// === Reveal-on-scroll hook ================================================
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px' });
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
+// === Hero variants ========================================================
+const AVATARS = [
+  "https://i.pravatar.cc/96?img=12",
+  "https://i.pravatar.cc/96?img=47",
+  "https://i.pravatar.cc/96?img=33",
+  "https://i.pravatar.cc/96?img=15",
+];
+
+function AvatarStack() {
+  return (
+    <div className="hero__avatars">
+      <div className="hero__avatar-stack">
+        {AVATARS.map((src, i) => (
+          <div key={i} className="hero__avatar" style={{ backgroundImage: `url(${src})` }} />
+        ))}
+      </div>
+      <div>
+        <div style={{fontSize:14, fontWeight:500}}>+100 PyMEs activas</div>
+        <div style={{fontSize:12.5, color:'var(--muted)'}}>Facturando con ARCA cada día</div>
+      </div>
+    </div>
+  );
+}
+
+function HeroSplit() {
+  return (
+    <section className="hero">
+      <div className="container hero__inner">
+        <div>
+          <AvatarStack />
+          <h1 className="hero__title">
+            Gestioná tu PyME <em>con claridad,</em><br/>creciendo sin fricción.
+          </h1>
+          <p className="hero__sub">
+            Facturación ARCA, contabilidad, stock y equipo en una sola plataforma.
+            Pensada para empresas argentinas que ya no entran en una planilla.
+          </p>
+          <div className="hero__ctas">
+            <a href="#" className="btn btn--primary">Probar 14 días gratis <IconArrowRight size={16}/></a>
+            <a href="#" className="btn btn--ghost">Ver demo en vivo</a>
+          </div>
+          <div style={{display:'flex', gap:22, marginTop:32, fontSize:13.5, color:'var(--muted)', flexWrap:'wrap'}}>
+            <span style={{display:'inline-flex',gap:6,alignItems:'center'}}><IconCheck size={14}/> Sin tarjeta</span>
+            <span style={{display:'inline-flex',gap:6,alignItems:'center'}}><IconCheck size={14}/> Migración asistida</span>
+            <span style={{display:'inline-flex',gap:6,alignItems:'center'}}><IconCheck size={14}/> Soporte humano en español</span>
+          </div>
+        </div>
+        <div className="hero__visual hero__visual--video">
+          <div className="hero__visual-tag"><span className="dot"/> ARCA conectado</div>
+          <HeroDashboardLoop />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroCenter() {
+  return (
+    <section className="hero" style={{paddingBottom:0}}>
+      <div className="container" style={{textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center'}}>
+        <span className="chip" style={{marginBottom:20}}>
+          <IconSparkle size={14}/> Nuevo · Facturas en bloque desde Excel
+        </span>
+        <h1 className="hero__title" style={{maxWidth: '14ch', textAlign:'center'}}>
+          La forma <em>seria</em> de gestionar<br/>tu PyME en Argentina.
+        </h1>
+        <p className="hero__sub" style={{maxWidth: '58ch', marginLeft:'auto', marginRight:'auto'}}>
+          Facturación electrónica, contabilidad, stock, cobros y nómina conectados con ARCA, AFIP y Mercado Pago.
+          Hecho por contadores y desarrolladores argentinos.
+        </p>
+        <div className="hero__ctas" style={{justifyContent:'center', marginTop:8}}>
+          <a href="#" className="btn btn--primary">Empezar gratis <IconArrowRight size={16}/></a>
+          <a href="#" className="btn btn--ghost"><IconPlay size={14}/> Ver tour (2 min)</a>
+        </div>
+        <div style={{marginTop:48, width:'100%', maxWidth:1000}}>
+          <div className="hero__visual hero__visual--video" style={{aspectRatio:'16/9', borderRadius:'var(--radius-xl)'}}>
+            <div className="hero__visual-tag"><span className="dot"/> ARCA conectado</div>
+            <HeroDashboardLoop wide />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroEditorial() {
+  return (
+    <section className="hero">
+      <div className="container">
+        <div style={{display:'grid', gridTemplateColumns:'1fr', gap:0}}>
+          <div style={{display:'flex', alignItems:'flex-end', justifyContent:'space-between', gap:32, flexWrap:'wrap'}}>
+            <AvatarStack />
+            <div style={{display:'flex', gap:10}}>
+              <a href="#" className="btn btn--ghost">Hablar con ventas</a>
+              <a href="#" className="btn btn--primary">Probar gratis <IconArrowRight size={16}/></a>
+            </div>
+          </div>
+          <h1 className="hero__title" style={{fontSize:'clamp(56px,9vw,140px)', margin:'40px 0 0', textAlign:'left'}}>
+            Tu PyME,<br/>en <em>orden.</em>
+          </h1>
+          <div style={{display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:48, marginTop:48, alignItems:'end'}}>
+            <div className="hero__visual hero__visual--video" style={{aspectRatio:'16/10', borderRadius:'var(--radius-xl)'}}>
+              <div className="hero__visual-tag"><span className="dot"/> Sincronizando</div>
+              <HeroDashboardLoop wide />
+            </div>
+            <div>
+              <p className="hero__sub" style={{margin:0}}>
+                Una plataforma para facturar con ARCA, llevar la contabilidad,
+                controlar stock, cobrar y pagar al equipo —sin moverte de pantalla.
+              </p>
+              <div style={{display:'flex', gap:12, marginTop:24, flexWrap:'wrap'}}>
+                <span className="chip"><IconShield size={14}/> AFIP / ARCA</span>
+                <span className="chip"><IconCard size={14}/> Mercado Pago</span>
+                <span className="chip"><IconBolt size={14}/> Tiempo real</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// In-hero ambient dashboard loop
+function HeroDashboardLoop({ wide }) {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setTick(x => x + 1), 1800);
+    return () => clearInterval(t);
+  }, []);
+  const rows = ['Lacteos del Sur SA', 'Distribuidora Norte', 'Estudio Garcia & Asoc.', 'Pizzeria La Esquina', 'Taller Mecanico JR'];
+  return (
+    <div style={{
+      position:'absolute', inset: wide ? '60px 80px' : '60px 36px',
+      display:'flex', flexDirection:'column', gap:14,
+    }}>
+      <div style={{display:'flex', gap:14, flexWrap:'wrap'}}>
+        <MiniStat label="Facturado hoy" value="$ 184.500" trend="+8%" />
+        <MiniStat label="Por cobrar" value="$ 62.300" trend="−3%" neg />
+        <MiniStat label="Stock crítico" value="2 items" trend="" />
+      </div>
+      <div style={{
+        flex:1, background:'rgba(244,239,230,.06)',
+        border:'1px solid rgba(244,239,230,.10)',
+        borderRadius:14, padding:14, color:'#F4EFE6', fontSize:12.5,
+        display:'flex', flexDirection:'column', gap:10, overflow:'hidden'
+      }}>
+        <div style={{display:'flex', justifyContent:'space-between', opacity:.7, fontSize:11, letterSpacing:'.05em', textTransform:'uppercase'}}>
+          <span>Facturas recientes</span>
+          <span>CAE</span>
+        </div>
+        {rows.map((r, i) => {
+          const cae = (700000000000 + tick * 17 + i * 31).toString().slice(0, 14);
+          return (
+            <div key={i} style={{
+              display:'flex', justifyContent:'space-between',
+              padding:'8px 0', borderTop: i===0?'none':'1px solid rgba(244,239,230,.08)',
+              opacity: 1 - i*.08, fontVariantNumeric:'tabular-nums'
+            }}>
+              <span>{r}</span>
+              <span style={{fontFamily:'var(--font-mono)', opacity:.65}}>{cae}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+function MiniStat({ label, value, trend, neg }) {
+  return (
+    <div style={{
+      flex:1, minWidth:140,
+      background:'rgba(244,239,230,.08)',
+      border:'1px solid rgba(244,239,230,.10)',
+      borderRadius:12, padding:'12px 14px', color:'#F4EFE6'
+    }}>
+      <div style={{fontSize:11, opacity:.6, letterSpacing:'.05em', textTransform:'uppercase'}}>{label}</div>
+      <div style={{fontSize:20, marginTop:4, fontWeight:500, letterSpacing:'-0.02em'}}>{value}</div>
+      {trend && (
+        <div style={{
+          fontSize:11.5, marginTop:6,
+          color: neg ? '#E37449' : '#9BB369'
+        }}>{trend} vs ayer</div>
+      )}
+    </div>
+  );
+}
+
+function Hero({ variant }) {
+  if (variant === 'center') return <HeroCenter />;
+  if (variant === 'editorial') return <HeroEditorial />;
+  return <HeroSplit />;
+}
+
+// === Marquee ==============================================================
+const LOGOS = [
+  { name: "ARCA", sub: "AFIP" },
+  { name: "Mercado Pago" },
+  { name: "Modo" },
+  { name: "Banco Galicia" },
+  { name: "Tiendanube" },
+  { name: "Andreani" },
+  { name: "Naranja X" },
+  { name: "Santander" },
+  { name: "Mercado Libre" },
+];
+function Marquee() {
+  const items = [...LOGOS, ...LOGOS];
+  return (
+    <div className="marquee">
+      <div className="container" style={{marginBottom:20, display:'flex', justifyContent:'center'}}>
+        <span className="eyebrow">Integrado con tus herramientas</span>
+      </div>
+      <div className="marquee__track">
+        {items.map((l, i) => (
+          <div className="marquee__item" key={i}>
+            <span style={{fontFamily:'var(--font-serif)', fontStyle:'italic', color:'var(--accent)'}}>✶</span>
+            <span>{l.name}</span>
+            {l.sub && <span style={{fontSize:12, color:'var(--muted)'}}>· {l.sub}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// === Stats ================================================================
+function Stats() {
+  const items = [
+    { num: "+100", label: "PyMEs ya facturan con PymeStudio cada mes" },
+    { num: "99.9%", label: "Uptime promedio, monitoreado 24/7" },
+    { num: "<2", em: "min", label: "Para emitir tu primera factura electrónica" },
+    { num: "100%", label: "Argentino · soporte humano en español" },
+  ];
+  return (
+    <section style={{padding:'80px 0 96px'}}>
+      <div className="container">
+        <div className="reveal" style={{marginBottom: 48, maxWidth: 720}}>
+          <span className="eyebrow">Números reales</span>
+          <h2 className="section-title">
+            Más de una década <em>ayudando</em> a PyMEs argentinas a crecer con orden.
+          </h2>
+        </div>
+        <div className="stats reveal">
+          {items.map((s, i) => (
+            <div className="stats__item" key={i}>
+              <p className="stats__num">{s.num}</p>
+              <p className="stats__label">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// === Modules ==============================================================
+function Modules() {
+  return (
+    <section id="productos">
+      <div className="container">
+        <div className="section-head reveal">
+          <span className="eyebrow">Productos</span>
+          <h2 className="section-title">
+            Cuatro módulos. Una sola <em>plataforma.</em>
+          </h2>
+          <p className="lede">
+            Cada producto resuelve un problema concreto del día a día. Empezá por el que te aprieta hoy
+            — los datos se enchufan entre sí cuando sumes el resto.
+          </p>
+        </div>
+        <div className="modules">
+
+          <a className="module-link" style={{gridColumn:'span 8'}} href="factura-facil.html">
+            <article className="module module--accent module--wide reveal" style={{gridColumn:'auto', height:'100%'}}>
+              <span className="module__num">01 · Disponible</span>
+              <div className="module__icon"><IconFactura/></div>
+              <h3 className="module__title">FacturaFácil</h3>
+              <p className="module__desc">
+                Facturación electrónica con CAE real de ARCA. Mono y RI, deuda CCMA en vivo,
+                facturación masiva desde Mercado Pago, módulo de impuestos con forecast.
+              </p>
+              <FacturaPreview/>
+              <div className="module__chips">
+                <span className="module__chip">CAE real</span>
+                <span className="module__chip">Padrón A4</span>
+                <span className="module__chip">CCMA</span>
+                <span className="module__chip">IIBB</span>
+              </div>
+              <span className="module__arrow"><IconArrowUpRight size={18}/></span>
+            </article>
+          </a>
+
+          <a className="module-link" style={{gridColumn:'span 4'}} href="dashboard-bi.html">
+            <article className="module reveal" style={{gridColumn:'auto', height:'100%'}}>
+              <span className="module__num">02 · Disponible</span>
+              <div className="module__icon"><IconChart/></div>
+              <h3 className="module__title">Dashboard BI</h3>
+              <p className="module__desc">
+                Ventas, CMV, márgenes y proveedores en vivo. Asesor IA con contexto real
+                del negocio. Sync con Google Drive.
+              </p>
+              <div className="module__chips">
+                <span className="module__chip">Asesor IA</span>
+                <span className="module__chip">Forecast</span>
+                <span className="module__chip">Pareto</span>
+              </div>
+              <span className="module__arrow"><IconArrowUpRight size={18}/></span>
+            </article>
+          </a>
+
+          <a className="module-link" style={{gridColumn:'span 4'}} href="retail.html">
+            <article className="module reveal" style={{gridColumn:'auto', height:'100%'}}>
+              <span className="module__num">03 · Beta</span>
+              <div className="module__icon"><IconCard/></div>
+              <h3 className="module__title">Retail</h3>
+              <p className="module__desc">
+                POS + stock + clientes para comercios y gastronomía. MODO, Mercado Pago, cuotas,
+                fidelización y backoffice ERP. Facturación integrada.
+              </p>
+              <div className="module__chips">
+                <span className="module__chip">POS tablet</span>
+                <span className="module__chip">MODO QR</span>
+                <span className="module__chip">Cuotas</span>
+              </div>
+              <span className="module__arrow"><IconArrowUpRight size={18}/></span>
+            </article>
+          </a>
+
+          <a className="module-link" style={{gridColumn:'span 8'}} href="agropecuario.html">
+            <article className="module module--forest module--wide reveal" style={{gridColumn:'auto', height:'100%'}}>
+              <span className="module__num">04 · Beta</span>
+              <div className="module__icon"><IconBox/></div>
+              <h3 className="module__title">Agropecuario</h3>
+              <p className="module__desc">
+                Lotes, hacienda, costos por hectárea y campaña. SENASA DT-e, liquidaciones de
+                granos y modo offline para usar en el campo.
+              </p>
+              <MiniChart/>
+              <div className="module__chips">
+                <span className="module__chip">SENASA</span>
+                <span className="module__chip">Offline</span>
+                <span className="module__chip">Trazabilidad</span>
+                <span className="module__chip">Liquidaciones</span>
+              </div>
+              <span className="module__arrow"><IconArrowUpRight size={18}/></span>
+            </article>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Module({ className = "", num, icon, title, desc, visual }) {
+  return (
+    <article className={"module reveal " + className}>
+      <span className="module__num">{num}</span>
+      <div className="module__icon">{icon}</div>
+      <h3 className="module__title">{title}</h3>
+      <p className="module__desc">{desc}</p>
+      {visual && <div style={{marginTop:'auto'}}>{visual}</div>}
+    </article>
+  );
+}
+
+function FacturaPreview() {
+  return (
+    <div style={{
+      marginTop: 16,
+      background:'rgba(244,239,230,.06)',
+      border:'1px solid rgba(244,239,230,.12)',
+      borderRadius: 12,
+      padding: 16, fontSize: 12.5,
+      display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, color:'#F4EFE6'
+    }}>
+      <div>
+        <div style={{opacity:.6, fontSize:10.5, letterSpacing:'.05em', textTransform:'uppercase'}}>Tipo</div>
+        <div style={{fontSize:16, marginTop:4}}>Factura A 00001-00000128</div>
+        <div style={{marginTop:14, opacity:.6, fontSize:10.5, letterSpacing:'.05em', textTransform:'uppercase'}}>Cliente</div>
+        <div style={{fontSize:14, marginTop:4}}>Lácteos del Sur S.A.</div>
+        <div style={{opacity:.6, marginTop:2, fontSize:12}}>CUIT 30-71234567-8</div>
+      </div>
+      <div>
+        <div style={{opacity:.6, fontSize:10.5, letterSpacing:'.05em', textTransform:'uppercase'}}>Importe</div>
+        <div style={{fontSize:22, marginTop:4, letterSpacing:'-0.02em'}}>$ 84.250,00</div>
+        <div style={{marginTop:14, display:'flex', gap:6, alignItems:'center', fontSize:11, color:'#9BB369'}}>
+          <span style={{width:6,height:6,borderRadius:'50%',background:'#9BB369',display:'inline-block'}}/>
+          CAE 70123456789012
+        </div>
+        <div style={{marginTop:4, fontSize:11, opacity:.6}}>Vto. 19/06/2026</div>
+      </div>
+    </div>
+  );
+}
+
+function MiniChart() {
+  // Decorative line chart
+  const pts = [40, 32, 38, 28, 36, 22, 30, 18, 24, 14, 22, 10];
+  const w = 100, h = 60;
+  const step = w / (pts.length - 1);
+  const d = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${(i*step).toFixed(1)} ${p}`).join(' ');
+  const area = `${d} L ${w} ${h} L 0 ${h} Z`;
+  return (
+    <div style={{marginTop: 'auto'}}>
+      <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{width:'100%', height:80}}>
+        <defs>
+          <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#E37449" stopOpacity=".55"/>
+            <stop offset="100%" stopColor="#E37449" stopOpacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d={area} fill="url(#g1)"/>
+        <path d={d} fill="none" stroke="#E37449" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      <div style={{display:'flex', justifyContent:'space-between', fontSize:11, opacity:.6, marginTop:6, fontFamily:'var(--font-mono)'}}>
+        <span>ENE</span><span>MAR</span><span>MAY</span><span>JUL</span><span>SEP</span><span>NOV</span>
+      </div>
+    </div>
+  );
+}
+
+// === Dashboard mock section ==============================================
+const DASH_TABS = [
+  { key: 'Facturas', label: 'Facturas', desc: 'Emitidas en el mes, con CAE y vencimientos' },
+  { key: 'Caja',     label: 'Caja',     desc: 'Flujo de ingresos y egresos en vivo' },
+  { key: 'Stock',    label: 'Stock',    desc: 'Inventario por depósito con alertas' },
+  { key: 'Equipo',   label: 'Equipo',   desc: 'Sueldos liquidados y F.931 listos' },
+];
+
+const DASH_FEATURES = [
+  { icon: <IconBolt/>, title: 'Datos en tiempo real',
+    desc: 'Lo que vendés, cobrás y gastás se sincroniza al instante entre módulos.' },
+  { icon: <IconPlug/>, title: 'Sin doble carga',
+    desc: 'Cada factura mueve stock, asiento contable y caja. No tipeás nada dos veces.' },
+  { icon: <IconShield/>, title: 'Tu contador adentro',
+    desc: 'Libros IVA, F.931 e integra con tu ERP sin salir del sistema.' },
+];
+
+function Dashboard() {
+  const [tab, setTab] = useState(0);
+  return (
+    <section>
+      <div className="container">
+        <div className="dashboard reveal">
+          <div className="dashboard__left">
+            <span className="eyebrow" style={{color:'rgba(244,239,230,.7)'}}>El producto en acción</span>
+            <h2 className="dashboard__title">
+              Todo lo que pasa en tu PyME,<br/><em>en una sola pantalla.</em>
+            </h2>
+            <p className="dashboard__desc">
+              Cambiá entre módulos sin perder el contexto. Los números cruzan entre
+              facturación, banco, stock y sueldos —sin exportar Excels ni esperar al mes que viene.
+            </p>
+            <div className="dashboard__kpis">
+              <div className="dashboard__kpi">
+                <div className="dashboard__kpi-label">Facturado mes</div>
+                <div className="dashboard__kpi-value">$ 428k</div>
+                <div className="dashboard__kpi-trend">↑ +8,2% vs abril</div>
+              </div>
+              <div className="dashboard__kpi">
+                <div className="dashboard__kpi-label">Caja del día</div>
+                <div className="dashboard__kpi-value">$ 47k</div>
+                <div className="dashboard__kpi-trend">↑ +12% vs ayer</div>
+              </div>
+              <div className="dashboard__kpi">
+                <div className="dashboard__kpi-label">Por cobrar</div>
+                <div className="dashboard__kpi-value">$ 18k</div>
+                <div className="dashboard__kpi-trend dashboard__kpi-trend--neg">3 vencidas</div>
+              </div>
+            </div>
+            <div className="dashboard__features">
+              {DASH_FEATURES.map((f, i) => (
+                <div key={i} className="dashboard__feature">
+                  {f.icon}
+                  <span><strong>{f.title}.</strong> {f.desc}</span>
+                </div>
+              ))}
+            </div>
+            <div className="dashboard__tabs">
+              {DASH_TABS.map((t, i) => (
+                <button key={t.key} className={"dashboard__tab" + (i === tab ? " active" : "")} onClick={() => setTab(i)}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            <div style={{fontSize:13.5, color:'rgba(244,239,230,.55)', marginBottom:24, minHeight:'1.4em'}}>
+              {DASH_TABS[tab].desc}
+            </div>
+            <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
+              <a href="#" className="btn btn--accent">Ver demo guiada <IconArrowRight size={16}/></a>
+              <a href="#contacto" className="btn btn--ghost" style={{color:'#F4EFE6', borderColor:'rgba(244,239,230,.25)'}}>Empezar gratis</a>
+            </div>
+          </div>
+          <div style={{display:'flex', alignItems:'center'}}>
+            {tab === 0 && <UIFacturas/>}
+            {tab === 1 && <UICaja/>}
+            {tab === 2 && <UIStock/>}
+            {tab === 3 && <UIEquipo/>}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function UIShell({ title, children, badge }) {
+  return (
+    <div className="ui-mock">
+      <div className="ui-mock__head">
+        <div className="ui-mock__head-left">
+          <span style={{width:10,height:10,borderRadius:'50%',background:'#E37449',display:'inline-block'}}/>
+          {title}
+        </div>
+        {badge && <span style={{fontSize:11.5, color:'var(--muted)', fontFamily:'var(--font-mono)'}}>{badge}</span>}
+      </div>
+      <div className="ui-mock__body">{children}</div>
+    </div>
+  );
+}
+
+function UIFacturas() {
+  const rows = [
+    ['00000128', 'Lácteos del Sur SA', 'A', '$ 84.250', 'CAE', 'ok'],
+    ['00000127', 'Distribuidora Norte', 'B', '$ 32.400', 'CAE', 'ok'],
+    ['00000126', 'Estudio García', 'A', '$ 28.600', 'Pendiente', 'pend'],
+    ['00000125', 'Pizzería La Esquina', 'C', '$ 12.800', 'CAE', 'ok'],
+    ['00000124', 'Taller Mec. JR', 'B', '$ 46.500', 'CAE', 'ok'],
+  ];
+  return (
+    <UIShell title="Facturas emitidas" badge="MAY 2026">
+      <div style={{display:'grid', gridTemplateColumns:'1fr auto auto auto', gap:'8px 14px', fontSize:12.5}}>
+        <div style={{color:'var(--muted)', fontSize:11, letterSpacing:'.04em', textTransform:'uppercase'}}>Cliente</div>
+        <div style={{color:'var(--muted)', fontSize:11, letterSpacing:'.04em', textTransform:'uppercase', textAlign:'right'}}>N°</div>
+        <div style={{color:'var(--muted)', fontSize:11, letterSpacing:'.04em', textTransform:'uppercase', textAlign:'right'}}>Importe</div>
+        <div style={{color:'var(--muted)', fontSize:11, letterSpacing:'.04em', textTransform:'uppercase'}}>Estado</div>
+        {rows.map((r, i) => (
+          <React.Fragment key={i}>
+            <div style={{borderTop:'1px solid var(--line)', paddingTop:8}}>{r[1]} <span style={{color:'var(--muted)'}}>· {r[2]}</span></div>
+            <div style={{borderTop:'1px solid var(--line)', paddingTop:8, textAlign:'right', fontFamily:'var(--font-mono)', color:'var(--muted)'}}>{r[0]}</div>
+            <div style={{borderTop:'1px solid var(--line)', paddingTop:8, textAlign:'right', fontVariantNumeric:'tabular-nums'}}>{r[3]}</div>
+            <div style={{borderTop:'1px solid var(--line)', paddingTop:8}}>
+              <span style={{
+                display:'inline-flex', gap:6, alignItems:'center', fontSize:11.5,
+                padding:'3px 8px', borderRadius:999,
+                background: r[5]==='ok' ? '#E8F0DA' : '#FCE9DA',
+                color: r[5]==='ok' ? '#3F5142' : '#A6431C'
+              }}>
+                <span style={{width:6,height:6,borderRadius:'50%',background:'currentColor'}}/>
+                {r[4]}
+              </span>
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    </UIShell>
+  );
+}
+
+function UICaja() {
+  return (
+    <UIShell title="Flujo de caja" badge="ÚLTIMOS 30 DÍAS">
+      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:18}}>
+        <div style={{padding:14, background:'var(--bg-2)', borderRadius:10}}>
+          <div style={{fontSize:11, color:'var(--muted)', letterSpacing:'.04em', textTransform:'uppercase'}}>Ingresos</div>
+          <div style={{fontSize:22, marginTop:6, fontWeight:500, letterSpacing:'-0.02em'}}>$ 428.000</div>
+          <div style={{fontSize:12, color:'#3F5142', marginTop:2}}>+8,2% vs mes anterior</div>
+        </div>
+        <div style={{padding:14, background:'var(--bg-2)', borderRadius:10}}>
+          <div style={{fontSize:11, color:'var(--muted)', letterSpacing:'.04em', textTransform:'uppercase'}}>Egresos</div>
+          <div style={{fontSize:22, marginTop:6, fontWeight:500, letterSpacing:'-0.02em'}}>$ 312.000</div>
+          <div style={{fontSize:12, color:'#A6431C', marginTop:2}}>+2,4% vs mes anterior</div>
+        </div>
+      </div>
+      <svg viewBox="0 0 300 90" style={{width:'100%', height:110}}>
+        <defs>
+          <linearGradient id="ga" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#C24A1F" stopOpacity=".25"/>
+            <stop offset="100%" stopColor="#C24A1F" stopOpacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0 60 L30 50 L60 56 L90 40 L120 44 L150 30 L180 36 L210 22 L240 28 L270 14 L300 18 L300 90 L0 90 Z" fill="url(#ga)"/>
+        <path d="M0 60 L30 50 L60 56 L90 40 L120 44 L150 30 L180 36 L210 22 L240 28 L270 14 L300 18" fill="none" stroke="#C24A1F" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M0 75 L30 72 L60 68 L90 66 L120 62 L150 60 L180 58 L210 55 L240 56 L270 52 L300 50" fill="none" stroke="#2B3A2E" strokeOpacity=".5" strokeWidth="1.2" strokeDasharray="3 3"/>
+      </svg>
+      <div style={{display:'flex', gap:16, marginTop:8, fontSize:11.5, color:'var(--muted)'}}>
+        <span style={{display:'inline-flex', alignItems:'center', gap:6}}><span style={{width:10,height:2,background:'#C24A1F'}}/> Ingresos</span>
+        <span style={{display:'inline-flex', alignItems:'center', gap:6}}><span style={{width:10,height:2,background:'#2B3A2E',opacity:.5}}/> Egresos</span>
+      </div>
+    </UIShell>
+  );
+}
+
+function UIStock() {
+  const items = [
+    ['Yerba Mate 1kg', 124, 'OK', 'ok'],
+    ['Aceite Girasol 900ml', 18, 'Bajo', 'warn'],
+    ['Café Molido 500g', 3, 'Crítico', 'crit'],
+    ['Azúcar 1kg', 87, 'OK', 'ok'],
+    ['Harina 000 1kg', 12, 'Bajo', 'warn'],
+  ];
+  return (
+    <UIShell title="Stock por depósito" badge="DEPÓSITO CENTRAL">
+      <div style={{display:'flex', flexDirection:'column', gap:0}}>
+        {items.map((it, i) => (
+          <div key={i} style={{display:'grid', gridTemplateColumns:'1fr auto auto', gap:14, padding:'10px 0', borderTop: i===0?'none':'1px solid var(--line)', alignItems:'center'}}>
+            <div>{it[0]}</div>
+            <div style={{fontFamily:'var(--font-mono)', color:'var(--muted)', fontSize:12}}>{it[1]} u.</div>
+            <span style={{
+              fontSize:11, padding:'3px 8px', borderRadius:999,
+              background: it[3]==='ok'?'#E8F0DA': it[3]==='warn'?'#FCE9DA':'#F9D7CB',
+              color:    it[3]==='ok'?'#3F5142': it[3]==='warn'?'#A6431C':'#7A2A0E'
+            }}>{it[2]}</span>
+          </div>
+        ))}
+      </div>
+    </UIShell>
+  );
+}
+
+function UIEquipo() {
+  const people = [
+    ['Camila R.', 'Administración', '$ 380.000', 'al día'],
+    ['Martín L.', 'Ventas', '$ 420.000 + comisión', 'al día'],
+    ['Sofía B.', 'Operaciones', '$ 360.000', 'al día'],
+  ];
+  return (
+    <UIShell title="Liquidación de sueldos" badge="MAYO 2026 · F.931 LISTO">
+      <div style={{display:'flex', flexDirection:'column'}}>
+        {people.map((p, i) => (
+          <div key={i} style={{display:'grid', gridTemplateColumns:'auto 1fr auto auto', gap:14, padding:'12px 0', borderTop: i===0?'none':'1px solid var(--line)', alignItems:'center'}}>
+            <div style={{width:32, height:32, borderRadius:'50%', background:'var(--bg-2)', display:'grid', placeItems:'center', fontSize:12, fontWeight:500}}>
+              {p[0].split(' ').map(x=>x[0]).join('')}
+            </div>
+            <div>
+              <div style={{fontSize:13.5}}>{p[0]}</div>
+              <div style={{fontSize:11.5, color:'var(--muted)'}}>{p[1]}</div>
+            </div>
+            <div style={{fontSize:12.5, color:'var(--muted)'}}>{p[2]}</div>
+            <span style={{fontSize:11, padding:'3px 8px', borderRadius:999, background:'#E8F0DA', color:'#3F5142'}}>{p[3]}</span>
+          </div>
+        ))}
+      </div>
+    </UIShell>
+  );
+}
+
+// === Steps ================================================================
+function Steps() {
+  const steps = [
+    { num: '001', title: 'Migración asistida', desc: 'Subís tu Excel, planilla o exportás desde tu sistema viejo. Te ayudamos sin costo.' , icon: <IconArrowUpRight/> },
+    { num: '002', title: 'Conectá ARCA', desc: 'Asociás tu CUIT en 2 minutos. Validamos punto de venta y certificados.' , icon: <IconShield/> },
+    { num: '003', title: 'Primera factura', desc: 'Emití factura A, B o C con CAE en menos de 2 minutos.' , icon: <IconFactura/> },
+    { num: '004', title: 'Cobrás y conciliás', desc: 'Mandás link de pago. El cobro entra y se concilia solo con tu banco.' , icon: <IconCard/> },
+    { num: '005', title: 'Crecés con datos', desc: 'Reportes vivos te dicen qué clientes y productos te hacen ganar.' , icon: <IconChart/> },
+  ];
+  return (
+    <section id="como-funciona">
+      <div className="container">
+        <div className="section-head reveal">
+          <span className="eyebrow">Cómo funciona</span>
+          <h2 className="section-title">
+            De caos a control <em>en cinco pasos.</em>
+          </h2>
+          <p className="lede">
+            Onboarding humano con migración asistida. La mayoría de las PyMEs
+            facturan en su primer día.
+          </p>
+        </div>
+        <div className="steps reveal">
+          {steps.map((s) => (
+            <div key={s.num} className="step">
+              <div className="step__icon">{s.icon}</div>
+              <span className="step__num">{s.num}</span>
+              <h3 className="step__title">{s.title}</h3>
+              <p className="step__desc">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// === Testimonials =========================================================
+function Testimonials() {
+  const items = [
+    {
+      quote: "Pasamos de 3 sistemas distintos a uno solo. La facturación con ARCA dejó de ser un dolor de cabeza.",
+      name: "Mariana Pérez", role: "Dueña, Distribuidora Sur",
+      img: "https://i.pravatar.cc/120?img=5"
+    },
+    {
+      quote: "Mi contador entra a PymeStudio y trabaja directo. Ahorramos *dos días* al mes de exportar Excels.",
+      name: "Ezequiel Romero", role: "CEO, Romero Indumentaria",
+      img: "https://i.pravatar.cc/120?img=14"
+    },
+    {
+      quote: "El reporte de flujo de caja proyectado me salvó un mes complicado. Sabía antes que se venía el bache.",
+      name: "Lucía Fernández", role: "Co-founder, Estudio Núcleo",
+      img: "https://i.pravatar.cc/120?img=20"
+    },
+  ];
+  return (
+    <section>
+      <div className="container">
+        <div className="section-head reveal" style={{maxWidth:'none', display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'flex-end', gap:32, flexWrap:'wrap'}}>
+          <div>
+            <span className="eyebrow">Testimonios</span>
+            <h2 className="section-title">Lo que dicen las <em>PyMEs</em> que ya lo usan.</h2>
+          </div>
+          <a href="#" className="btn btn--ghost">Ver casos completos <IconArrowUpRight size={16}/></a>
+        </div>
+        <div className="testimonials reveal">
+          {items.map((t, i) => {
+            // bold *text* parts as italic serif
+            const parts = t.quote.split(/(\*[^*]+\*)/g);
+            return (
+              <article key={i} className="testimonial">
+                <div className="testimonial__stars">
+                  {Array.from({length:5}).map((_,j) => <IconStar key={j} size={14}/>)}
+                </div>
+                <p className="testimonial__quote">
+                  "{parts.map((p, j) =>
+                    p.startsWith('*') ? <em key={j}>{p.slice(1,-1)}</em> : <React.Fragment key={j}>{p}</React.Fragment>
+                  )}"
+                </p>
+                <div className="testimonial__author">
+                  <div className="testimonial__avatar" style={{backgroundImage:`url(${t.img})`}}/>
+                  <div>
+                    <div className="testimonial__name">{t.name}</div>
+                    <div className="testimonial__role">{t.role}</div>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// === Pricing ==============================================================
+const PLANS = [
+  {
+    name: 'Inicial', desc: 'Para monotributistas y emprendedores que recién empiezan a facturar.',
+    monthly: 4900, yearly: 3900, featured: false,
+    features: [
+      'Facturas A, B, C, M ilimitadas',
+      'Conexión ARCA y AFIP',
+      'Cobros con Mercado Pago',
+      '1 usuario incluido',
+      'Soporte por chat (lun-vie)',
+    ]
+  },
+  {
+    name: 'Negocio', desc: 'Para PyMEs en crecimiento que ya tienen empleados y contador.',
+    monthly: 14900, yearly: 11900, featured: true,
+    features: [
+      'Todo lo del plan Inicial',
+      'Contabilidad + Libro IVA',
+      'Stock multi-depósito',
+      'Hasta 5 usuarios + contador gratis',
+      'Reportes en vivo',
+      'Soporte prioritario',
+    ]
+  },
+  {
+    name: 'Estudio', desc: 'Para contadores y estudios que gestionan varias empresas.',
+    monthly: 34900, yearly: 27900, featured: false,
+    features: [
+      'Todo lo del plan Negocio',
+      'Hasta 25 CUITs en una cuenta',
+      'Usuarios ilimitados',
+      'Conciliación bancaria avanzada',
+      'API + integración a medida',
+      'Onboarding white-glove',
+    ]
+  },
+];
+
+function Pricing() {
+  const [yearly, setYearly] = useState(true);
+  const trackRef = useRef(null);
+  const [slider, setSlider] = useState({left: 4, width: 100});
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const btn = track.querySelector(yearly ? '[data-key="yearly"]' : '[data-key="monthly"]');
+    if (btn) {
+      setSlider({ left: btn.offsetLeft, width: btn.offsetWidth });
+    }
+  }, [yearly]);
+
+  return (
+    <section id="precios">
+      <div className="container">
+        <div className="section-head section-head--center reveal">
+          <span className="eyebrow">Precios</span>
+          <h2 className="section-title">Planes simples, <em>sin sorpresas.</em></h2>
+          <p className="lede">Primer mes gratis. Cambiá de plan o cancelá cuando quieras.</p>
+        </div>
+        <div style={{display:'flex', justifyContent:'center'}}>
+          <div className="pricing-toggle" ref={trackRef}>
+            <div className="pricing-toggle__slider" style={{left:slider.left, width:slider.width}}/>
+            <button className={"pricing-toggle__btn" + (!yearly ? ' active' : '')} data-key="monthly" onClick={() => setYearly(false)}>Mensual</button>
+            <button className={"pricing-toggle__btn" + (yearly ? ' active' : '')} data-key="yearly" onClick={() => setYearly(true)}>
+              Anual <span className="pricing-toggle__badge">−20%</span>
+            </button>
+          </div>
+        </div>
+        <div className="pricing reveal">
+          {PLANS.map((p) => (
+            <article key={p.name} className={"plan" + (p.featured ? ' plan--featured' : '')}>
+              {p.featured && <span className="plan__badge">Más elegido</span>}
+              <h3 className="plan__name">{p.name}</h3>
+              <div>
+                <span className="plan__price">
+                  $ {(yearly ? p.yearly : p.monthly).toLocaleString('es-AR')}
+                  <span className="plan__price-period"> /mes</span>
+                </span>
+                {yearly && <div className="plan__price-old">$ {p.monthly.toLocaleString('es-AR')} si pagás mensual</div>}
+              </div>
+              <p className="plan__desc">{p.desc}</p>
+              <ul className="plan__features">
+                {p.features.map(f => (
+                  <li key={f} className="plan__feature">
+                    <IconCheck size={16}/> <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href="#" className={p.featured ? "btn btn--accent" : "btn btn--primary"} style={{marginTop:'auto'}}>
+                Empezar gratis <IconArrowRight size={16}/>
+              </a>
+            </article>
+          ))}
+        </div>
+        <p style={{textAlign:'center', marginTop:32, fontSize:13.5, color:'var(--muted)'}}>
+          Todos los precios en pesos argentinos. IVA incluido. ¿Necesitás algo a medida? <a href="#" style={{color:'var(--accent)', textDecoration:'underline'}}>Hablá con ventas</a>.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// === Blog =================================================================
+function Blog() {
+  const posts = [
+    { date: '12 mayo 2026', tag: 'ARCA', slug: 'arca-guia-pymes', title: 'Qué cambia con ARCA: la guía para PyMEs argentinas',
+      img: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=70' },
+    { date: '04 mayo 2026', tag: 'Contabilidad', slug: 'balance-trimestral', title: 'Cómo cerrar tu balance trimestral sin pánico',
+      img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=70' },
+    { date: '21 abril 2026', tag: 'Crecimiento', slug: '7-indicadores-pyme', title: '7 indicadores para entender la salud de tu negocio',
+      img: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=600&q=70' },
+  ];
+  return (
+    <section id="recursos">
+      <div className="container">
+        <div className="section-head reveal" style={{maxWidth:'none', display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'flex-end', gap:32, flexWrap:'wrap'}}>
+          <div>
+            <span className="eyebrow">Recursos</span>
+            <h2 className="section-title">Aprendé a llevar tu PyME, <em>con criterio.</em></h2>
+          </div>
+          <a href="blog.html" className="btn btn--ghost">Ir al blog <IconArrowUpRight size={16}/></a>
+        </div>
+        <div className="blog-grid reveal">
+          {posts.map((p, i) => (
+            <a className="post" key={i} href={`blog.html#${p.slug}`}>
+              <div className="post__img" style={{backgroundImage:`url(${p.img})`, backgroundSize:'cover', backgroundPosition:'center'}}/>
+              <div className="post__meta">{p.date} · {p.tag}</div>
+              <h3 className="post__title">{p.title}</h3>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// === FAQ ==================================================================
+const FAQS = [
+  { q: '¿Sirve si soy monotributista?', a: 'Sí. Podés emitir factura C o E desde el plan Inicial. Si más adelante pasás a Responsable Inscripto, cambiás el tipo de facturación con un click —no migrás de plataforma.' },
+  { q: '¿Cómo es la conexión con ARCA / AFIP?', a: 'Asociamos tu CUIT vía clave fiscal y delegación de servicios. El proceso lo guiamos paso a paso y suele tardar 2-3 minutos. Soportamos punto de venta web y controlado.' },
+  { q: '¿Mi contador puede entrar al sistema?', a: 'Sí —y sin costo extra. Tu contador tiene un usuario propio con acceso a libros IVA, balances, y exportación a SIAP / Tango / Bejerman / cualquier ERP que use.' },
+  { q: '¿Puedo migrar desde mi sistema actual?', a: 'Te ayudamos a migrar desde Tango, Bejerman, Holistor, Colppy, Xubio, Contabilium y planillas de Excel. La migración asistida es gratis hasta 24 meses de histórico.' },
+  { q: '¿Qué pasa si crece mi PyME?', a: 'Cambiás de plan en línea, sin recontratar nada. Los datos no se mueven —solo se desbloquean módulos y usuarios adicionales.' },
+  { q: '¿Mi información está segura?', a: 'Servidores en Argentina y respaldo en AWS São Paulo. Cifrado en tránsito y en reposo, 2FA en todos los usuarios, y exportación de tus datos cuando quieras. ISO 27001 en proceso.' },
+];
+
+function FAQ() {
+  const [open, setOpen] = useState(0);
+  return (
+    <section>
+      <div className="container">
+        <div className="section-head section-head--center reveal">
+          <span className="eyebrow">Preguntas frecuentes</span>
+          <h2 className="section-title">Lo que la gente nos <em>pregunta antes</em> de probarlo.</h2>
+        </div>
+        <div className="faq reveal">
+          {FAQS.map((f, i) => {
+            const isOpen = i === open;
+            return (
+              <div key={i} className={"faq__item" + (isOpen ? ' open' : '')}>
+                <button className="faq__btn" onClick={() => setOpen(isOpen ? -1 : i)} aria-expanded={isOpen}>
+                  <span>{f.q}</span>
+                  <span className="faq__toggle"><IconPlus size={14}/></span>
+                </button>
+                <div className="faq__panel" style={{maxHeight: isOpen ? 200 : 0}}>
+                  <p className="faq__answer">{f.a}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// === Services (external services banner) ==================================
+function Services() {
+  const services = [
+    {
+      brand: 'SAS',
+      brandItalic: 'rápido',
+      url: 'https://saspyme.vercel.app/',
+      tagline: 'Constituí tu SAS en 24 horas.',
+      desc: 'IA + firma digital + portal del cliente. Estatuto generado al instante, sin escribano, sin papeleo. Ley 27.349.',
+      bullets: [
+        'Estatuto redactado por IA en segundos',
+        'Firma digital remota — sin presencia física',
+        'Portal personalizado para cada cliente',
+        'Presentación y CUIT incluidos',
+      ],
+      cta: 'Empezar trámite',
+      stat: { num: '24', unit: 'hs', label: 'Inscripción típica en CABA' },
+      visual: 'sas',
+    },
+    {
+      brand: 'RIMI',
+      brandItalic: ' Agent',
+      url: 'https://pymerimi.vercel.app/',
+      tagline: '¿Tu PyME califica al RIMI 2026?',
+      desc: 'Diagnóstico fiscal con IA: RIMI, Economía del Conocimiento, capacitación, exportación. 8+ incentivos analizados en 60 segundos.',
+      bullets: [
+        'Análisis IA en 60 segundos',
+        '8+ incentivos del marco PyME 2026',
+        'Checklist documental personalizado',
+        'Sin registro, sin CUIT, anónimo',
+      ],
+      cta: 'Hacer diagnóstico',
+      stat: { num: '21', unit: '%', label: 'IVA devuelto anticipado · Dec. 242/26' },
+      visual: 'rimi',
+    },
+  ];
+
+  return (
+    <section id="servicios" className="services">
+      <div className="container">
+        <div className="services__head reveal">
+          <div>
+            <span className="eyebrow">Servicios complementarios</span>
+            <h2 className="section-title">Más allá de <em>PymeStudio.</em></h2>
+            <p className="lede" style={{marginTop:14}}>
+              Dos herramientas independientes que conviven con tu gestión diaria —
+              para cuando necesitás constituir una sociedad o aprovechar incentivos fiscales.
+            </p>
+          </div>
+        </div>
+
+        <div className="services__grid reveal">
+          {services.map((s, i) => (
+            <a key={i} className="service-card" href={s.url} target="_blank" rel="noopener noreferrer">
+              <div className={"service-card__visual service-card__visual--" + s.visual}>
+                {s.visual === 'sas' ? <ServiceVisualSAS/> : <ServiceVisualRIMI/>}
+              </div>
+              <div className="service-card__body">
+                <div className="service-card__brand">
+                  {s.brand}<em>{s.brandItalic}</em>
+                </div>
+                <h3 className="service-card__tagline">{s.tagline}</h3>
+                <p className="service-card__desc">{s.desc}</p>
+                <ul className="service-card__bullets">
+                  {s.bullets.map((b, j) => (
+                    <li key={j}><IconCheck size={14}/> {b}</li>
+                  ))}
+                </ul>
+                <div className="service-card__foot">
+                  <div className="service-card__stat">
+                    <div className="service-card__stat-num">
+                      {s.stat.num}<span>{s.stat.unit}</span>
+                    </div>
+                    <div className="service-card__stat-label">{s.stat.label}</div>
+                  </div>
+                  <span className="service-card__cta">
+                    {s.cta} <IconArrowUpRight size={16}/>
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <p className="services__note reveal">
+          Servicios provistos por partners de PymeStudio. Se abren en una nueva pestaña.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// SVG visuals embedded inside each card — iconographic mocks
+function ServiceVisualSAS() {
+  return (
+    <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="sas-bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#1E4538"/>
+          <stop offset="1" stopColor="#2A6450"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="220" fill="url(#sas-bg)"/>
+      {/* Document card */}
+      <g transform="translate(120,30)">
+        <rect width="160" height="170" rx="10" fill="#FBF8F1"/>
+        <rect x="20" y="22" width="80" height="6" rx="3" fill="#1E4538"/>
+        <rect x="20" y="38" width="120" height="3" rx="1.5" fill="#1E4538" opacity=".4"/>
+        <rect x="20" y="46" width="100" height="3" rx="1.5" fill="#1E4538" opacity=".4"/>
+        <rect x="20" y="54" width="115" height="3" rx="1.5" fill="#1E4538" opacity=".4"/>
+        <rect x="20" y="62" width="80" height="3" rx="1.5" fill="#1E4538" opacity=".4"/>
+        <rect x="20" y="80" width="120" height="3" rx="1.5" fill="#1E4538" opacity=".4"/>
+        <rect x="20" y="88" width="100" height="3" rx="1.5" fill="#1E4538" opacity=".4"/>
+        <rect x="20" y="96" width="115" height="3" rx="1.5" fill="#1E4538" opacity=".4"/>
+        {/* Signature line */}
+        <path d="M 28 130 Q 40 120 55 130 T 90 130" stroke="#1E4538" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <rect x="20" y="142" width="60" height="2" rx="1" fill="#1E4538" opacity=".25"/>
+        {/* Check stamp */}
+        <circle cx="125" cy="135" r="18" fill="#CCE2BD"/>
+        <path d="M 117 135 l 6 6 l 11 -11" stroke="#1E4538" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      </g>
+      {/* 24hr badge */}
+      <g transform="translate(40,80)">
+        <circle cx="0" cy="0" r="34" fill="#CCE2BD"/>
+        <text x="0" y="2" textAnchor="middle" fontFamily="Geist" fontSize="22" fontWeight="600" fill="#1E4538">24</text>
+        <text x="0" y="18" textAnchor="middle" fontFamily="Geist" fontSize="9" fontWeight="500" fill="#1E4538" letterSpacing="1.5">HORAS</text>
+      </g>
+      {/* Floating tag */}
+      <g transform="translate(310,150)">
+        <rect x="-46" y="-12" width="92" height="24" rx="12" fill="#CCE2BD"/>
+        <text x="0" y="4" textAnchor="middle" fontFamily="Geist" fontSize="10" fontWeight="500" fill="#1E4538">Firma digital ✓</text>
+      </g>
+    </svg>
+  );
+}
+
+function ServiceVisualRIMI() {
+  return (
+    <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="rimi-bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#CCE2BD"/>
+          <stop offset="1" stopColor="#B8D3A6"/>
+        </linearGradient>
+      </defs>
+      <rect width="400" height="220" fill="url(#rimi-bg)"/>
+      {/* Dashboard card */}
+      <g transform="translate(60,28)">
+        <rect width="280" height="164" rx="12" fill="#FBF8F1"/>
+        {/* Header */}
+        <rect x="18" y="18" width="100" height="6" rx="3" fill="#1E4538"/>
+        <rect x="18" y="30" width="160" height="3" rx="1.5" fill="#1E4538" opacity=".4"/>
+        {/* Big number stat */}
+        <text x="18" y="78" fontFamily="Geist" fontSize="38" fontWeight="600" fill="#1E4538" letterSpacing="-1">$ 142k</text>
+        <text x="18" y="96" fontFamily="Geist" fontSize="9" fontWeight="500" fill="#1E4538" opacity=".6" letterSpacing="1">BENEFICIO ESTIMADO</text>
+        {/* Bar chart */}
+        <g transform="translate(18,108)">
+          <rect x="0" y="22" width="36" height="20" rx="3" fill="#1E4538" opacity=".25"/>
+          <rect x="44" y="14" width="36" height="28" rx="3" fill="#1E4538" opacity=".4"/>
+          <rect x="88" y="6" width="36" height="36" rx="3" fill="#1E4538" opacity=".6"/>
+          <rect x="132" y="0" width="36" height="42" rx="3" fill="#1E4538"/>
+        </g>
+        {/* Check list right */}
+        <g transform="translate(190,52)">
+          <g transform="translate(0,0)">
+            <circle cx="6" cy="6" r="6" fill="#1E4538"/>
+            <path d="M 3 6 l 2 2 l 4 -4" stroke="#FBF8F1" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            <rect x="18" y="3" width="58" height="3" rx="1.5" fill="#1E4538" opacity=".6"/>
+            <rect x="18" y="9" width="40" height="3" rx="1.5" fill="#1E4538" opacity=".3"/>
+          </g>
+          <g transform="translate(0,22)">
+            <circle cx="6" cy="6" r="6" fill="#1E4538"/>
+            <path d="M 3 6 l 2 2 l 4 -4" stroke="#FBF8F1" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            <rect x="18" y="3" width="50" height="3" rx="1.5" fill="#1E4538" opacity=".6"/>
+            <rect x="18" y="9" width="60" height="3" rx="1.5" fill="#1E4538" opacity=".3"/>
+          </g>
+          <g transform="translate(0,44)">
+            <circle cx="6" cy="6" r="6" fill="#1E4538"/>
+            <path d="M 3 6 l 2 2 l 4 -4" stroke="#FBF8F1" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            <rect x="18" y="3" width="62" height="3" rx="1.5" fill="#1E4538" opacity=".6"/>
+            <rect x="18" y="9" width="44" height="3" rx="1.5" fill="#1E4538" opacity=".3"/>
+          </g>
+        </g>
+      </g>
+      {/* IA chip */}
+      <g transform="translate(38,180)">
+        <rect x="0" y="0" width="78" height="22" rx="11" fill="#1E4538"/>
+        <text x="39" y="14" textAnchor="middle" fontFamily="Geist" fontSize="10" fontWeight="500" fill="#CCE2BD">✦ IA · 60 seg</text>
+      </g>
+    </svg>
+  );
+}
+
+// === Closing CTA ==========================================================
+function Closing() {
+  return (
+    <section id="contacto">
+      <div className="container">
+        <div className="closing reveal">
+          <div>
+            <span className="eyebrow">Empezá hoy</span>
+            <h2 className="closing__title">¿Listo para ordenar <em>tu PyME?</em></h2>
+            <p className="closing__desc">
+              14 días gratis. Migración asistida sin costo. Si no te enamora, te devolvemos todo —sin preguntas.
+            </p>
+            <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
+              <a href="#" className="btn btn--primary">Probar gratis <IconArrowRight size={16}/></a>
+              <a href="#" className="btn btn--ghost"><IconChat size={14}/> Hablar con ventas</a>
+            </div>
+            <div style={{marginTop:32, display:'flex', alignItems:'center', gap:14}}>
+              <div className="hero__avatar-stack">
+                {AVATARS.slice(0,3).map((src, i) => (
+                  <div key={i} className="hero__avatar" style={{ backgroundImage: `url(${src})`, borderColor:'var(--forest)' }}/>
+                ))}
+              </div>
+              <span style={{fontSize:13.5, color:'rgba(244,239,230,.75)'}}>
+                +100 PyMEs eligen PymeStudio
+              </span>
+            </div>
+          </div>
+          <div className="closing__img">
+            <image-slot id="closing-img" shape="rounded" radius="22"
+              placeholder="Foto de tu equipo o lugar de trabajo"
+              style={{width:'100%', height:'100%', display:'block'}}>
+            </image-slot>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// === Footer ===============================================================
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="container">
+        <p className="footer__big reveal">
+          Pyme<em>Studio</em>
+        </p>
+        <div className="footer__grid">
+          <div className="footer__col footer__about">
+            <a href="#" className="nav__logo">
+              <span className="nav__logo-mark"><SumaLogo size={28}/></span>
+              <span>PymeStudio</span>
+            </a>
+            <p>Hecho en Buenos Aires. Pensado para PyMEs argentinas que crecen.</p>
+            <div style={{display:'flex', gap:10, marginTop:20}}>
+              <a href="#" aria-label="X / Twitter" className="footer__social"><IconX size={18}/></a>
+              <a href="#" aria-label="Instagram" className="footer__social"><IconInstagram size={18}/></a>
+              <a href="#" aria-label="LinkedIn" className="footer__social"><IconLinkedin size={18}/></a>
+              <a href="#" aria-label="YouTube" className="footer__social"><IconYoutube size={18}/></a>
+            </div>
+            <div style={{display:'flex', gap:10, marginTop:16, flexWrap:'wrap'}}>
+              <a href="#" className="chip"><IconGlobe size={14}/> ES — AR</a>
+              <a href="#" className="chip"><span style={{width:6,height:6,borderRadius:'50%',background:'#3F5142'}}/> Estado · operativo</a>
+            </div>
+          </div>
+          <div className="footer__col">
+            <h4>Producto</h4>
+            <ul>
+              <li><a href="#">Facturación</a></li>
+              <li><a href="#">Contabilidad</a></li>
+              <li><a href="#">Stock</a></li>
+              <li><a href="#">Sueldos</a></li>
+              <li><a href="#">Reportes</a></li>
+            </ul>
+          </div>
+          <div className="footer__col">
+            <h4>Empresa</h4>
+            <ul>
+              <li><a href="#">Sobre nosotros</a></li>
+              <li><a href="#">Clientes</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Carreras</a></li>
+              <li><a href="#">Prensa</a></li>
+            </ul>
+          </div>
+          <div className="footer__col">
+            <h4>Soporte</h4>
+            <ul>
+              <li><a href="#">Centro de ayuda</a></li>
+              <li><a href="#">Contacto</a></li>
+              <li><a href="#">Migración asistida</a></li>
+              <li><a href="#">API</a></li>
+              <li><a href="#">Términos</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="footer__bottom">
+          <span>© 2026 PymeStudio · CUIT 30-71234567-8 · Av. Corrientes 1234, CABA</span>
+          <span>Diseñado con cariño en Buenos Aires</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+Object.assign(window, {
+  Nav, Drawer, Hero, Marquee, Stats, Modules, Dashboard,
+  Steps, Testimonials, Pricing, Blog, FAQ, Closing, Footer,
+  useReveal,
+});
+
+</script>
+<script type="text/babel">
+// === Blog Post Page =======================================================
+const { useState: useStateBP, useEffect: useEffectBP } = React;
+
+// Each post has full body. Bodies are simple — paragraphs, headings, lists,
+// pull-quotes. Authors are real-sounding Argentine names.
+const POST_BODIES = {
+  'arca-guia-pymes': {
+    slug: 'arca-guia-pymes',
+    date: '12 mayo 2026',
+    readTime: '6 min',
+    tag: 'ARCA',
+    title: 'Qué cambia con ARCA: la guía para PyMEs argentinas',
+    deck: 'AFIP pasó a llamarse ARCA. Cambian formularios, certificados y plazos —pero no las obligaciones. Repasamos qué tenés que hacer hoy y qué podés dejar para más adelante.',
+    img: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1600&q=80',
+    author: { name: 'Florencia Sosa', role: 'Contadora Pública · CABA' },
+    body: [
+      ['p', 'La reorganización del organismo recaudador en ARCA generó más confusión que cambios reales. Si tenés una PyME, lo más importante a entender es esto: tus obligaciones de fondo no cambiaron. Lo que cambia es el envoltorio.'],
+      ['h2', 'Qué se mantiene igual'],
+      ['p', 'Las obligaciones sustantivas siguen idénticas. Seguís facturando con CAE, presentando IVA mensual, F.931 si tenés empleados y Ganancias anual. Las escalas, alícuotas y formularios principales no se tocaron.'],
+      ['ul', [
+        'Tipos de comprobante (A, B, C, M, E) sin cambios',
+        'Períodos fiscales y vencimientos calendario, iguales',
+        'Régimen simplificado / Monotributo, sin alteraciones',
+      ]],
+      ['h2', 'Qué cambia operativamente'],
+      ['p', 'Cambian los puntos de entrada digitales. La clave fiscal sigue funcionando, pero algunos certificados (puntos de venta, delegación de servicios) están migrando a nuevas URLs. Si tu sistema de facturación está actualizado, no notás nada.'],
+      ['quote', 'El 90% de las PyMEs no tiene que hacer ningún trámite especial por ARCA. Lo único es revisar que tu sistema de facturación esté en la versión nueva.'],
+      ['h2', 'Checklist práctico'],
+      ['ul', [
+        'Verificá que tu sistema emita con el endpoint nuevo (tu proveedor debería haberlo hecho ya).',
+        'Confirmá que la clave fiscal y delegaciones estén activas. Probá entrando una vez.',
+        'Revisá los puntos de venta autorizados. Si emitís web, no debería haber drama.',
+        'Si usás Mis Comprobantes para consultar facturas recibidas, está todo igual.',
+      ]],
+      ['h2', 'Plazos y multas'],
+      ['p', 'Por ahora ARCA está siendo flexible con desfasajes técnicos —no con las obligaciones de fondo. No pagar IVA porque "estaba todo cambiando" no es excusa: las multas siguen vigentes. Pagá en término, aunque después rectifiques.'],
+    ],
+  },
+  'balance-trimestral': {
+    slug: 'balance-trimestral',
+    date: '04 mayo 2026',
+    readTime: '8 min',
+    tag: 'Contabilidad',
+    title: 'Cómo cerrar tu balance trimestral sin pánico',
+    deck: 'Un checklist práctico que usan estudios contables para cerrar trimestres sin pelearse con el contador. Spoiler: empieza el día 1 del trimestre, no el último.',
+    img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80',
+    author: { name: 'Diego Caballero', role: 'Estudio Contable Caballero & Asoc.' },
+    body: [
+      ['p', 'Si llegás al último día del trimestre con todo el papelerío suelto, ya perdiste. El cierre prolijo se construye día a día, no en una maratón final. Acá te dejamos el sistema que usamos con clientes que tienen su contabilidad ordenada.'],
+      ['h2', 'Semana 1 del trimestre: setup'],
+      ['p', 'En la primera semana del nuevo trimestre, ordená el cierre anterior. Archivá comprobantes, confirmá conciliaciones bancarias y bloqueá el período en el sistema para que nadie modifique nada hacia atrás.'],
+      ['h2', 'Mensual: las tres revisiones que importan'],
+      ['ul', [
+        'Conciliación bancaria al día 5 del mes siguiente, sin excepciones.',
+        'Revisión de cuenta corriente clientes (¿quién está vencido?).',
+        'Cierre de caja física semanal —diaria si tenés punto de venta.',
+      ]],
+      ['quote', 'El trabajo del cierre trimestral debería ser revisar y firmar. No reconstruir tres meses de movimientos en dos noches.'],
+      ['h2', 'Última semana: lo que sí o sí va'],
+      ['ul', [
+        'Provisión de impuestos (IVA, Ingresos Brutos, Ganancias).',
+        'Devengamiento de sueldos y cargas sociales.',
+        'Amortizaciones del trimestre.',
+        'Ajustes por inflación si aplican.',
+        'Revisión de saldos atípicos en cuentas patrimoniales.',
+      ]],
+      ['h2', 'Errores recurrentes'],
+      ['p', 'El error más común es no separar contablemente la operación del propietario. Si retirás plata para uso personal y no lo registrás como retiro/dividendo, tu balance miente y vas a tener problemas más adelante. Llevá la caja del dueño separada desde el día uno.'],
+    ],
+  },
+  '7-indicadores-pyme': {
+    slug: '7-indicadores-pyme',
+    date: '21 abril 2026',
+    readTime: '5 min',
+    tag: 'Crecimiento',
+    title: '7 indicadores para entender la salud de tu negocio',
+    deck: 'Más allá del facturado: margen bruto, días de stock, ciclo de cobro y otros números que te dicen si tu PyME está creciendo bien —o tapando agujeros.',
+    img: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1600&q=80',
+    author: { name: 'Mariela Rocha', role: 'Consultora PyME · Rosario' },
+    body: [
+      ['p', 'Facturar mucho no significa ganar. Estos siete indicadores te muestran lo que realmente está pasando en tu negocio, en menos de cinco minutos por mes.'],
+      ['h2', '1. Margen bruto por producto'],
+      ['p', 'Precio de venta menos costo directo, sobre precio de venta. Si vendés muchos productos, calculalo por familia. Un margen bruto cayendo mes a mes es la primera señal de que tu negocio se está erosionando.'],
+      ['h2', '2. Días de stock'],
+      ['p', 'Cuántos días te dura el inventario al ritmo de venta actual. Mucho stock = plata dormida. Poco stock = roturas y clientes perdidos. El punto justo depende de tu rubro.'],
+      ['h2', '3. Ciclo de cobro (DSO)'],
+      ['p', 'Cuántos días promedio tardás en cobrar una factura. Si vendés a 30 días pero cobrás a 55, tenés un problema de financiamiento gratis al cliente. Cada día de DSO es plata que falta en tu caja.'],
+      ['h2', '4. Ciclo de pago a proveedores'],
+      ['p', 'El espejo del anterior. Si pagás a 15 días pero cobrás a 55, financiás 40 días con plata propia. Negociar pagos a 30/45 días con proveedores es de las mejores inversiones de tiempo que podés hacer.'],
+      ['quote', 'No es lo mismo facturar $10 millones cobrando a 30 días que cobrando a 90. El segundo escenario te puede fundir.'],
+      ['h2', '5. Punto de equilibrio mensual'],
+      ['p', 'Cuánto tenés que facturar para cubrir todos los costos fijos. Sabelo de memoria. Si en el día 20 del mes ya pasaste el punto de equilibrio, sabés que el resto es ganancia.'],
+      ['h2', '6. Concentración de clientes'],
+      ['p', 'Qué porcentaje de tu facturación viene del cliente más grande. Si es más del 30%, estás en zona de riesgo. Si uno se va, te llevás un susto enorme.'],
+      ['h2', '7. Caja proyectada a 60 días'],
+      ['p', 'Sumando cobros esperados, restando pagos comprometidos. Te dice si vas a tener plata para pagar sueldos en dos meses. Mucho más útil que el balance histórico.'],
+    ],
+  },
+  'monotributo-2026': {
+    slug: 'monotributo-2026',
+    date: '15 abril 2026',
+    readTime: '4 min',
+    tag: 'Impuestos',
+    title: 'Monotributo 2026: nuevas escalas y cuándo conviene pasar a RI',
+    deck: 'Las nuevas escalas dan aire, pero también suben los montos. Calculá si te conviene quedarte en Monotributo o saltar al Régimen General antes de fin de año.',
+    img: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1600&q=80',
+    author: { name: 'Federico Iturralde', role: 'Asesor Tributario · Córdoba' },
+    body: [
+      ['p', 'Con las escalas actualizadas, muchos monotributistas pueden quedarse un año más sin saltar a Responsable Inscripto. Pero "poder" no es lo mismo que "convenir". Veamos cuándo conviene cada uno.'],
+      ['h2', 'Cuándo conviene seguir en Monotributo'],
+      ['ul', [
+        'Vendés mayormente a consumidor final.',
+        'Tu margen es alto y los gastos con IVA son bajos.',
+        'No tenés empleados o tenés muy pocos.',
+        'Querés simplicidad operativa por sobre optimización fiscal.',
+      ]],
+      ['h2', 'Cuándo conviene pasar a Responsable Inscripto'],
+      ['ul', [
+        'Vendés a empresas que necesitan factura A para descargar IVA.',
+        'Tenés compras importantes con IVA que hoy no podés descontar.',
+        'Estás cerca del tope de facturación y vas a saltar igual.',
+        'Querés acceso a créditos bancarios con balance formal.',
+      ]],
+      ['quote', 'Llegar al tope y caer "de prepo" en RI es peor que pasar voluntariamente con tiempo de armar bien la transición.'],
+      ['h2', 'La transición'],
+      ['p', 'Si decidís pasar, planificá con al menos dos meses de anticipación. Tenés que dar de alta IVA, configurar facturación A, avisar a clientes y proveedores, y ajustar precios para no perder margen por el IVA que ahora tenés que facturar.'],
+    ],
+  },
+  'mercado-pago-conciliacion': {
+    slug: 'mercado-pago-conciliacion',
+    date: '02 abril 2026',
+    readTime: '6 min',
+    tag: 'Cobros',
+    title: 'Mercado Pago: cómo automatizar la conciliación bancaria',
+    deck: 'Si cobrás por Mercado Pago, te explicamos cómo cerrar caja todos los días en 3 minutos en vez de 30, con conciliación automática contra tu banco.',
+    img: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600&q=80',
+    author: { name: 'Ana Cardozo', role: 'Operaciones · PymeStudio' },
+    body: [
+      ['p', 'Conciliar Mercado Pago a mano es uno de los trabajos más tediosos de una PyME. Lo bueno es que ya casi nadie lo hace así. Te contamos cómo automatizar el proceso de punta a punta.'],
+      ['h2', 'El problema'],
+      ['p', 'Mercado Pago te muestra los cobros brutos. El banco recibe los netos, descontando comisión y retenciones impositivas. Si no atás cabos, te falta plata cada día que no cuadrás —y a fin de mes terminás con un saldo que no entendés.'],
+      ['h2', 'La solución'],
+      ['ul', [
+        'Conectá Mercado Pago a tu sistema con la API oficial.',
+        'Cada cobro genera automáticamente: ingreso de caja + retenciones a recuperar + asiento bancario.',
+        'Cuando entra la liquidación al banco, el sistema cruza el monto neto contra los cobros del día y los marca como conciliados.',
+      ]],
+      ['quote', 'En PymeStudio, este proceso lo hacemos automático. Vos sólo abrís la pantalla y firmás las diferencias.'],
+      ['h2', 'Errores típicos'],
+      ['p', 'El más común es no separar comisiones de Mercado Pago como un gasto financiero. Eso te infla los ingresos y te deforma el margen. Configurá una cuenta específica desde el día uno.'],
+    ],
+  },
+  'stock-multi-deposito': {
+    slug: 'stock-multi-deposito',
+    date: '20 marzo 2026',
+    readTime: '7 min',
+    tag: 'Operaciones',
+    title: 'Stock multi-depósito sin que se te escape un tornillo',
+    deck: 'Tres reglas simples para mantener inventario real en varios depósitos, con conteos cíclicos en vez de inventarios totales que paralizan la operación.',
+    img: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600&q=80',
+    author: { name: 'Hernán Lopata', role: 'Logística · Distribuidora Norte' },
+    body: [
+      ['p', 'El inventario total semestral es una tortura que casi nunca refleja la realidad. Después de tres días contando, las diferencias acumuladas son tan grandes que el resultado pierde valor. Hay una mejor forma: conteos cíclicos.'],
+      ['h2', 'Regla 1: clasificá ABC'],
+      ['p', 'No todos los productos importan igual. Tu 20% top de productos representa el 80% del valor del stock. Esos son los A. Los contás todos los meses. Los B (próximo 30%) cada trimestre. Los C, una vez por año.'],
+      ['h2', 'Regla 2: conteo cíclico continuo'],
+      ['p', 'En vez de parar la operación 3 días, contás 5 SKUs por día. Al fin del mes contaste 100 productos sin que nadie se entere. Las diferencias se ajustan al momento, mientras todavía sabés qué pasó.'],
+      ['h2', 'Regla 3: movimientos entre depósitos = remito'],
+      ['p', 'Toda transferencia entre depósitos debe generar un remito interno con quién lo retiró, quién lo recibió y firma de ambos. El 80% de las diferencias de stock vienen de transferencias mal registradas.'],
+      ['quote', 'Inventario real no es contar más. Es contar mejor, y registrar todo movimiento al instante.'],
+      ['h2', 'Y el sistema'],
+      ['p', 'Necesitás un sistema que te muestre stock por depósito en tiempo real, no consolidado. Si tu software te dice "tenés 50 unidades" pero no sabés en qué depósito están, ya estás perdiendo.'],
+    ],
+  },
+};
+
+function getSlug() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('slug') || 'arca-guia-pymes';
+}
+
+function PostBody({ blocks }) {
+  return (
+    <div className="post-body">
+      {blocks.map((b, i) => {
+        const [kind, content] = b;
+        if (kind === 'p') return <p key={i}>{content}</p>;
+        if (kind === 'h2') return <h2 key={i}>{content}</h2>;
+        if (kind === 'h3') return <h3 key={i}>{content}</h3>;
+        if (kind === 'quote') return (
+          <blockquote key={i} className="post-quote">"{content}"</blockquote>
+        );
+        if (kind === 'ul') return (
+          <ul key={i}>
+            {content.map((li, j) => <li key={j}>{li}</li>)}
+          </ul>
+        );
+        return null;
+      })}
+    </div>
+  );
+}
+
+function PostApp() {
+  const [scrolled, setScrolled] = useStateBP(false);
+  const [menuOpen, setMenuOpen] = useStateBP(false);
+  const slug = getSlug();
+  const post = POST_BODIES[slug] || POST_BODIES['arca-guia-pymes'];
+
+  useEffectBP(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffectBP(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+  }, [menuOpen]);
+
+  useEffectBP(() => {
+    document.title = `${post.title} — PymeStudio Blog`;
+  }, [post.title]);
+
+  // related: other posts from same tag, excl. current
+  const related = Object.values(POST_BODIES).filter(p => p.tag === post.tag && p.slug !== post.slug).slice(0, 3);
+  const fallbackRelated = Object.values(POST_BODIES).filter(p => p.slug !== post.slug).slice(0, 3);
+  const showRelated = related.length > 0 ? related : fallbackRelated;
+
+  return (
+    <React.Fragment>
+      <Nav onOpenMenu={() => setMenuOpen(true)} scrolled={scrolled} />
+      <Drawer open={menuOpen} onClose={() => setMenuOpen(false)} />
+
+      <main>
+        {/* Article header */}
+        <article>
+          <section style={{padding:'140px 0 40px'}}>
+            <div className="container" style={{maxWidth:780}}>
+              <a href="blog.html" className="post-back">
+                ← Volver al blog
+              </a>
+              <div className="post-meta-row">
+                <span className="chip">{post.tag}</span>
+                <span>{post.date}</span>
+                <span>·</span>
+                <span>{post.readTime} de lectura</span>
+              </div>
+              <h1 className="post-title">{post.title}</h1>
+              <p className="post-deck">{post.deck}</p>
+              <div className="post-author">
+                <div className="post-author__avatar">{post.author.name.split(' ').map(s => s[0]).join('')}</div>
+                <div>
+                  <div className="post-author__name">{post.author.name}</div>
+                  <div className="post-author__role">{post.author.role}</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Hero image */}
+          <section style={{paddingBottom:48}}>
+            <div className="container" style={{maxWidth:1080}}>
+              <div className="post-hero-img" style={{backgroundImage:`url(${post.img})`}}/>
+            </div>
+          </section>
+
+          {/* Body */}
+          <section style={{paddingBottom:96}}>
+            <div className="container" style={{maxWidth:720}}>
+              <PostBody blocks={post.body}/>
+            </div>
+          </section>
+
+          {/* Share + CTA */}
+          <section style={{paddingBottom:96}}>
+            <div className="container" style={{maxWidth:720}}>
+              <div className="post-cta">
+                <div>
+                  <div className="eyebrow">Probá PymeStudio</div>
+                  <h3 style={{fontSize:28, marginTop:10, letterSpacing:'-0.02em'}}>
+                    Llevá tu PyME con la prolijidad de este artículo, <em style={{fontFamily:'var(--font-serif)', fontStyle:'italic'}}>en la práctica.</em>
+                  </h3>
+                </div>
+                <a href="index.html#precios" className="btn btn--primary" style={{whiteSpace:'nowrap'}}>
+                  Probar 14 días gratis <IconArrowRight size={16}/>
+                </a>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        {/* Related */}
+        <section style={{paddingBottom:120}}>
+          <div className="container">
+            <div className="section-head reveal" style={{maxWidth:'none', display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'flex-end', gap:32, flexWrap:'wrap'}}>
+              <div>
+                <span className="eyebrow">Seguí leyendo</span>
+                <h2 className="section-title" style={{fontSize:'clamp(28px, 4vw, 44px)'}}>Más sobre <em>{post.tag.toLowerCase()}</em>.</h2>
+              </div>
+              <a href="blog.html" className="btn btn--ghost">Ir al blog <IconArrowUpRight size={16}/></a>
+            </div>
+            <div className="blog-grid reveal" style={{gridTemplateColumns:'repeat(3, 1fr)'}}>
+              {showRelated.map((p) => (
+                <a className="post" key={p.slug} href={`blog-post.html?slug=${p.slug}`}>
+                  <div className="post__img" style={{backgroundImage:`url(${p.img})`, backgroundSize:'cover', backgroundPosition:'center'}}/>
+                  <div className="post__meta">
+                    <span style={{color:'var(--accent)', fontWeight:500}}>{p.tag}</span>
+                    <span> · {p.date} · {p.readTime}</span>
+                  </div>
+                  <h3 className="post__title">{p.title}</h3>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer/>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<PostApp/>);
+
+</script>
 
 </body>
 </html>
