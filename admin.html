@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PymeStudio · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Config ── ⚠️ reemplazá con tus credenciales Supabase */
+:root {
+  --sb-url: '';
+  --sb-key: '';
+
+  /* tokens */
+  --bg:      #F4EFE6;
+  --bg-2:    #EBE4D5;
+  --bg-3:    #E1D9C8;
+  --ink:     #1C1A14;
+  --ink-2:   #5C5749;
+  --muted:   #8C8579;
+  --accent:  #C24A1F;
+  --line:    rgba(28,26,20,.12);
+  --green:   #1E7A4A;
+  --radius:  14px;
+}
+[data-theme="dark"] {
+  --bg:    #1C1A14;
+  --bg-2:  #252319;
+  --bg-3:  #2E2C22;
+  --ink:   #F4EFE6;
+  --ink-2: #A8A498;
+  --muted: #6C6A60;
+  --line:  rgba(244,239,230,.1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; font-family: 'Geist', system-ui, sans-serif;
+  background: var(--bg); color: var(--ink);
+  min-height: 100vh; font-size: 15px; line-height: 1.5;
+}
+
+/* ── Login screen ── */
+#login-screen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 24px;
+}
+.login-card {
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: 20px; padding: 40px 36px; width: 100%; max-width: 380px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.08);
+}
+.login-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 18px; margin-bottom: 24px; }
+.login-logo svg { flex-shrink: 0; }
+.login-card h1 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 6px; }
+.login-card p  { color: var(--ink-2); font-size: 14px; margin: 0 0 24px; }
+.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.field label { font-size: 13px; color: var(--ink-2); font-weight: 500; }
+.field input {
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 14px; font-size: 15px; font-family: inherit;
+  background: var(--bg); color: var(--ink); outline: none; width: 100%;
+}
+.field input:focus { border-color: var(--accent); }
+.btn-primary {
+  width: 100%; height: 48px; background: var(--ink); color: var(--bg);
+  border: none; border-radius: 10px; font-size: 15px; font-weight: 500;
+  cursor: pointer; font-family: inherit; transition: opacity .15s;
+}
+.btn-primary:hover { opacity: .85; }
+.login-error { color: var(--accent); font-size: 13px; margin-top: 8px; display: none; }
+
+/* ── App shell ── */
+#app { display: none; }
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  padding: 0 32px; height: 58px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.topbar-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; }
+.topbar-badge {
+  font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 999px;
+  background: var(--accent); color: #fff;
+}
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.btn-ghost {
+  background: none; border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 14px; font-size: 13px; cursor: pointer; font-family: inherit;
+  color: var(--ink-2); transition: border-color .15s;
+}
+.btn-ghost:hover { border-color: var(--ink-2); }
+.theme-btn {
+  background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px; color: var(--ink-2);
+}
+
+.main { padding: 32px; max-width: 1280px; margin: 0 auto; }
+
+/* ── Stats row ── */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+@media(max-width:900px){ .stats-row { grid-template-columns: repeat(2,1fr); } }
+.stat-card {
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.stat-label { font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.stat-num   { font-size: 36px; font-weight: 600; letter-spacing: -.03em; }
+.stat-sub   { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; }
+.tab-btn {
+  background: none; border: 1px solid transparent; border-radius: 8px;
+  padding: 8px 18px; font-size: 14px; font-weight: 500; cursor: pointer;
+  font-family: inherit; color: var(--ink-2); transition: all .15s;
+}
+.tab-btn:hover { border-color: var(--line); }
+.tab-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* ── Table ── */
+.table-card {
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden;
+}
+.table-head {
+  padding: 18px 24px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.table-head h2 { font-size: 16px; font-weight: 600; margin: 0; }
+.count-badge {
+  background: var(--bg-3); border-radius: 999px; padding: 3px 10px;
+  font-size: 13px; color: var(--ink-2); font-weight: 500;
+}
+.refresh-btn {
+  background: none; border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 12px; font-size: 13px; cursor: pointer; color: var(--ink-2);
+  font-family: inherit; transition: border-color .15s;
+}
+.refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--line); white-space: nowrap;
+}
+td { padding: 13px 16px; font-size: 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-3); }
+.empty-row td { text-align: center; padding: 48px; color: var(--muted); font-size: 14px; }
+.loading-row td { text-align: center; padding: 32px; color: var(--muted); font-size: 14px; }
+.pill {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 500; background: var(--bg-3); color: var(--ink-2);
+}
+.pill--web  { background: #ddf1e4; color: #1a5c35; }
+.pill--ventas { background: #fde8de; color: #8b2a0d; }
+
+/* tab panels */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* scrollable table wrapper */
+.table-scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<!-- ── Login ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg width="26" height="24" viewBox="0 0 220 200" fill="none">
+        <g fill="#C24A1F">
+          <path d="M10 60 L70 10 L130 10 L80 60 Z"/>
+          <path d="M80 60 L130 10 L130 90 L80 90 Z"/>
+          <path d="M80 90 L130 90 Q140 90 140 100 Q140 110 130 110 L80 110 Z"/>
+          <path d="M90 110 L150 110 L150 190 L90 160 Z"/>
+          <path d="M90 160 L150 190 L100 190 L80 160 Z"/>
+        </g>
+      </svg>
+      PymeStudio Admin
+    </div>
+    <h1>Acceso restringido</h1>
+    <p>Solo para el equipo de PymeStudio.</p>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="pw-input" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn-primary" onclick="doLogin()">Ingresar</button>
+    <div class="login-error" id="login-error">Contraseña incorrecta.</div>
+  </div>
+</div>
+
+<!-- ── App ── -->
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-logo">
+      <svg width="22" height="20" viewBox="0 0 220 200" fill="none">
+        <g fill="#C24A1F">
+          <path d="M10 60 L70 10 L130 10 L80 60 Z"/>
+          <path d="M80 60 L130 10 L130 90 L80 90 Z"/>
+          <path d="M80 90 L130 90 Q140 90 140 100 Q140 110 130 110 L80 110 Z"/>
+          <path d="M90 110 L150 110 L150 190 L90 160 Z"/>
+          <path d="M90 160 L150 190 L100 190 L80 160 Z"/>
+        </g>
+      </svg>
+      PymeStudio
+      <span class="topbar-badge">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="toggleTheme()" title="Cambiar tema">🌓</button>
+      <button class="btn-ghost" onclick="logout()">Salir</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total registrados</div>
+        <div class="stat-num" id="stat-total">—</div>
+        <div class="stat-sub">desde el lanzamiento</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Hoy</div>
+        <div class="stat-num" id="stat-today">—</div>
+        <div class="stat-sub">nuevos registros</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Esta semana</div>
+        <div class="stat-num" id="stat-week">—</div>
+        <div class="stat-sub">últimos 7 días</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Consultas ventas</div>
+        <div class="stat-num" id="stat-ventas">—</div>
+        <div class="stat-sub">Estudio / enterprise</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('leads',this)">Registros</button>
+      <button class="tab-btn" onclick="switchTab('ventas',this)">Consultas ventas</button>
+    </div>
+
+    <!-- Leads table -->
+    <div class="tab-panel active" id="tab-leads">
+      <div class="table-card">
+        <div class="table-head">
+          <div style="display:flex;align-items:center;gap:10px">
+            <h2>Leads — prueba gratis</h2>
+            <span class="count-badge" id="leads-count">0</span>
+          </div>
+          <button class="refresh-btn" onclick="loadLeads()">↻ Actualizar</button>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Empresa</th>
+                <th>Teléfono</th>
+                <th>Origen</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="leads-tbody">
+              <tr class="loading-row"><td colspan="6">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ventas table -->
+    <div class="tab-panel" id="tab-ventas">
+      <div class="table-card">
+        <div class="table-head">
+          <div style="display:flex;align-items:center;gap:10px">
+            <h2>Consultas de ventas</h2>
+            <span class="count-badge" id="ventas-count">0</span>
+          </div>
+          <button class="refresh-btn" onclick="loadVentas()">↻ Actualizar</button>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Empresa</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Mensaje</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="ventas-tbody">
+              <tr class="loading-row"><td colspan="6">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ⚠️ Configuración — reemplazá con tus valores de Supabase
+// Panel: https://supabase.com → Project Settings → API
+const SB_URL  = 'https://TU_PROYECTO.supabase.co';
+const SB_KEY  = 'TU_ANON_KEY'; // anon key (pública)
+
+// Contraseña del panel de administración
+const ADMIN_PW = 'pymestudio2026';
+
+// ── Auth ──────────────────────────────────────────────
+function doLogin() {
+  const pw = document.getElementById('pw-input').value;
+  const err = document.getElementById('login-error');
+  if (pw === ADMIN_PW) {
+    sessionStorage.setItem('ps_admin', '1');
+    showApp();
+  } else {
+    err.style.display = 'block';
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+function logout() {
+  sessionStorage.removeItem('ps_admin');
+  location.reload();
+}
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadAll();
+}
+if (sessionStorage.getItem('ps_admin')) showApp();
+
+// ── Theme ─────────────────────────────────────────────
+const savedTheme = localStorage.getItem('ps_admin_theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('ps_admin_theme', next);
+}
+
+// ── Tabs ──────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ── Supabase fetch ────────────────────────────────────
+async function sbFetch(table, params = '') {
+  const res = await fetch(`${SB_URL}/rest/v1/${table}?order=created_at.desc${params}`, {
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Accept': 'application/json',
+    }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+// ── Data loading ──────────────────────────────────────
+let leadsData = [], ventasData = [];
+
+async function loadAll() {
+  await Promise.all([loadLeads(), loadVentas()]);
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function today() { return new Date().toISOString().slice(0,10); }
+function weekAgo() { const d = new Date(); d.setDate(d.getDate()-7); return d.toISOString(); }
+function esc(s) { return (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function loadLeads() {
+  const tbody = document.getElementById('leads-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Cargando…</td></tr>';
+  try {
+    leadsData = await sbFetch('leads');
+    document.getElementById('leads-count').textContent = leadsData.length;
+    updateStats();
+    if (!leadsData.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Sin registros aún.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = leadsData.map(r => `
+      <tr>
+        <td><strong>${esc(r.nombre)}</strong></td>
+        <td><a href="mailto:${esc(r.email)}" style="color:var(--accent)">${esc(r.email)}</a></td>
+        <td>${esc(r.empresa) || '<span style="color:var(--muted)">—</span>'}</td>
+        <td>${esc(r.tel) || '<span style="color:var(--muted)">—</span>'}</td>
+        <td><span class="pill pill--web">${esc(r.source)||'web'}</span></td>
+        <td style="color:var(--muted);white-space:nowrap">${fmtDate(r.created_at)}</td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Error al cargar: ${e.message}<br><small>Verificá SB_URL y SB_KEY en el archivo.</small></td></tr>`;
+  }
+}
+
+async function loadVentas() {
+  const tbody = document.getElementById('ventas-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Cargando…</td></tr>';
+  try {
+    ventasData = await sbFetch('contactos_ventas');
+    document.getElementById('ventas-count').textContent = ventasData.length;
+    document.getElementById('stat-ventas').textContent = ventasData.length;
+    if (!ventasData.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Sin consultas aún.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = ventasData.map(r => `
+      <tr>
+        <td><strong>${esc(r.nombre)}</strong></td>
+        <td>${esc(r.empresa) || '<span style="color:var(--muted)">—</span>'}</td>
+        <td><a href="mailto:${esc(r.email)}" style="color:var(--accent)">${esc(r.email)}</a></td>
+        <td>${esc(r.tel) || '<span style="color:var(--muted)">—</span>'}</td>
+        <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r.mensaje)}">${esc(r.mensaje)||'<span style="color:var(--muted)">—</span>'}</td>
+        <td style="color:var(--muted);white-space:nowrap">${fmtDate(r.created_at)}</td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Error al cargar: ${e.message}</td></tr>`;
+  }
+}
+
+function updateStats() {
+  document.getElementById('stat-total').textContent = leadsData.length;
+  const todayStr = today();
+  const todayCount = leadsData.filter(r => r.created_at && r.created_at.startsWith(todayStr)).length;
+  document.getElementById('stat-today').textContent = todayCount;
+  const weekStr = weekAgo();
+  const weekCount = leadsData.filter(r => r.created_at && r.created_at >= weekStr).length;
+  document.getElementById('stat-week').textContent = weekCount;
+}
+</script>
+</body>
+</html>

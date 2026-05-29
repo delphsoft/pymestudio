@@ -1,15 +1,6 @@
 <!doctype html>
 <html lang="es-AR">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SXM2JN2F2F"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SXM2JN2F2F');
-</script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>PymeStudio — Gestión ágil para tu PyME</title>
@@ -66,6 +57,7 @@ html[data-theme="dark"] {
 }
 
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 html, body { margin: 0; padding: 0; }
 html { background: var(--bg); }
 body {
@@ -3108,7 +3100,7 @@ function Nav({ onOpenMenu, scrolled }) {
         </a>
         <nav className="nav__links">
           <div className="nav__item">
-            <a href="index.html#productos">Productos ▾</a>
+            <a href="#productos">Productos ▾</a>
             <div className="nav__dropdown">
               <a className="nav__dropdown-item" href="factura-facil.html">
                 <span className="nav__dropdown-icon"><IconFactura size={18}/></span>
@@ -3140,15 +3132,15 @@ function Nav({ onOpenMenu, scrolled }) {
               </a>
             </div>
           </div>
-          <a href="index.html#como-funciona">Cómo funciona</a>
-          <a href="index.html#servicios">Servicios</a>
-          <a href="index.html#precios">Precios</a>
-          <a href="index.html#recursos">Recursos</a>
-          <a href="index.html#contacto">Soporte</a>
+          <a href="#como-funciona">Cómo funciona</a>
+          <a href="#servicios">Servicios</a>
+          <a href="#precios">Precios</a>
+          <a href="#recursos">Recursos</a>
+          <a href="#contacto">Soporte</a>
         </nav>
         <div className="nav__cta">
-          <a href="#" className="btn btn--ghost">Ingresar</a>
-          <a href="index.html#contacto" className="btn btn--primary">
+          <a href="#" className="btn btn--ghost" href="portal.html">Ingresar</a>
+          <a href="#" className="btn btn--primary" onClick={e=>{e.preventDefault();window._openSignup()}}>
             Probar gratis <IconArrowRight size={16} />
           </a>
           <button className="nav__menu-btn" aria-label="Abrir menú" onClick={onOpenMenu}>
@@ -3178,15 +3170,15 @@ function Drawer({ open, onClose }) {
           <a onClick={onClose} href="dashboard-bi.html">Dashboard BI</a>
           <a onClick={onClose} href="retail.html">Retail</a>
           <a onClick={onClose} href="agropecuario.html">Agropecuario</a>
-          <a onClick={onClose} href="index.html#como-funciona">Cómo funciona</a>
-          <a onClick={onClose} href="index.html#servicios">Servicios</a>
-          <a onClick={onClose} href="index.html#precios">Precios</a>
-          <a onClick={onClose} href="index.html#recursos">Recursos</a>
-          <a onClick={onClose} href="index.html#contacto">Soporte</a>
+          <a onClick={onClose} href="#como-funciona">Cómo funciona</a>
+          <a onClick={onClose} href="#servicios">Servicios</a>
+          <a onClick={onClose} href="#precios">Precios</a>
+          <a onClick={onClose} href="#recursos">Recursos</a>
+          <a onClick={onClose} href="#contacto">Soporte</a>
         </nav>
         <div className="drawer__cta">
-          <a href="#" className="btn btn--ghost" style={{flex:1}}>Ingresar</a>
-          <a href="#" className="btn btn--primary" style={{flex:1}}>Probar gratis</a>
+          <a href="#" className="btn btn--ghost" style={{flex:1}} href="portal.html">Ingresar</a>
+          <a href="#" className="btn btn--primary" style={{flex:1}} onClick={e=>{e.preventDefault();window._openSignup()}}>Probar gratis</a>
         </div>
       </div>
     </div>
@@ -3248,7 +3240,7 @@ function HeroSplit() {
             Pensada para empresas argentinas que ya no entran en una planilla.
           </p>
           <div className="hero__ctas">
-            <a href="#" className="btn btn--primary">Probar 14 días gratis <IconArrowRight size={16}/></a>
+            <a href="#" className="btn btn--primary" onClick={e=>{e.preventDefault();window._openSignup()}}>Probar 14 días gratis <IconArrowRight size={16}/></a>
             <a href="#" className="btn btn--ghost">Ver demo en vivo</a>
           </div>
           <div style={{display:'flex', gap:22, marginTop:32, fontSize:13.5, color:'var(--muted)', flexWrap:'wrap'}}>
@@ -3281,7 +3273,7 @@ function HeroCenter() {
           Hecho por contadores y desarrolladores argentinos.
         </p>
         <div className="hero__ctas" style={{justifyContent:'center', marginTop:8}}>
-          <a href="#" className="btn btn--primary">Empezar gratis <IconArrowRight size={16}/></a>
+          <a href="#" className="btn btn--primary" onClick={e=>{e.preventDefault();window._openSignup()}}>Empezar gratis <IconArrowRight size={16}/></a>
           <a href="#" className="btn btn--ghost"><IconPlay size={14}/> Ver tour (2 min)</a>
         </div>
         <div style={{marginTop:48, width:'100%', maxWidth:1000}}>
@@ -3304,7 +3296,7 @@ function HeroEditorial() {
             <AvatarStack />
             <div style={{display:'flex', gap:10}}>
               <a href="#" className="btn btn--ghost">Hablar con ventas</a>
-              <a href="#" className="btn btn--primary">Probar gratis <IconArrowRight size={16}/></a>
+              <a href="#" className="btn btn--primary" onClick={e=>{e.preventDefault();window._openSignup()}}>Probar gratis <IconArrowRight size={16}/></a>
             </div>
           </div>
           <h1 className="hero__title" style={{fontSize:'clamp(56px,9vw,140px)', margin:'40px 0 0', textAlign:'left'}}>
@@ -3701,7 +3693,7 @@ function Dashboard() {
             </div>
             <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
               <a href="#" className="btn btn--accent">Ver demo guiada <IconArrowRight size={16}/></a>
-              <a href="#contacto" className="btn btn--ghost" style={{color:'#F4EFE6', borderColor:'rgba(244,239,230,.25)'}}>Empezar gratis</a>
+              <a href="#" className="btn btn--ghost" style={{color:'#F4EFE6', borderColor:'rgba(244,239,230,.25)'}} onClick={e=>{e.preventDefault();window._openSignup()}}>Empezar gratis</a>
             </div>
           </div>
           <div style={{display:'flex', alignItems:'center'}}>
@@ -3957,7 +3949,7 @@ function Testimonials() {
 const PLANS = [
   {
     name: 'Inicial', desc: 'Para monotributistas y emprendedores que recién empiezan a facturar.',
-    monthly: 4900, yearly: 3900, featured: false,
+    monthly: 25000, yearly: 20000, featured: false,
     features: [
       'Facturas A, B, C, M ilimitadas',
       'Conexión ARCA y AFIP',
@@ -3968,7 +3960,7 @@ const PLANS = [
   },
   {
     name: 'Negocio', desc: 'Para PyMEs en crecimiento que ya tienen empleados y contador.',
-    monthly: 14900, yearly: 11900, featured: true,
+    monthly: 40000, yearly: 32000, featured: true,
     features: [
       'Todo lo del plan Inicial',
       'Contabilidad + Libro IVA',
@@ -3980,7 +3972,7 @@ const PLANS = [
   },
   {
     name: 'Estudio', desc: 'Para contadores y estudios que gestionan varias empresas.',
-    monthly: 34900, yearly: 27900, featured: false,
+    contact: true, featured: false,
     features: [
       'Todo lo del plan Negocio',
       'Hasta 25 CUITs en una cuenta',
@@ -4029,11 +4021,17 @@ function Pricing() {
               {p.featured && <span className="plan__badge">Más elegido</span>}
               <h3 className="plan__name">{p.name}</h3>
               <div>
-                <span className="plan__price">
-                  $ {(yearly ? p.yearly : p.monthly).toLocaleString('es-AR')}
-                  <span className="plan__price-period"> /mes</span>
-                </span>
-                {yearly && <div className="plan__price-old">$ {p.monthly.toLocaleString('es-AR')} si pagás mensual</div>}
+                {p.contact ? (
+                  <span className="plan__price" style={{fontSize:32,letterSpacing:'-.01em'}}>Consultar</span>
+                ) : (
+                  <React.Fragment>
+                    <span className="plan__price">
+                      $ {(yearly ? p.yearly : p.monthly).toLocaleString('es-AR')}
+                      <span className="plan__price-period"> /mes</span>
+                    </span>
+                    {yearly && <div className="plan__price-old">$ {p.monthly.toLocaleString('es-AR')} si pagás mensual</div>}
+                  </React.Fragment>
+                )}
               </div>
               <p className="plan__desc">{p.desc}</p>
               <ul className="plan__features">
@@ -4043,14 +4041,20 @@ function Pricing() {
                   </li>
                 ))}
               </ul>
-              <a href="#" className={p.featured ? "btn btn--accent" : "btn btn--primary"} style={{marginTop:'auto'}}>
-                Empezar gratis <IconArrowRight size={16}/>
-              </a>
+              {p.contact ? (
+                <a href="#" className="btn btn--primary" style={{marginTop:'auto'}} onClick={e=>{e.preventDefault();window._openSales()}}>
+                  Hablar con ventas <IconArrowRight size={16}/>
+                </a>
+              ) : (
+                <a href="#" className={p.featured ? "btn btn--accent" : "btn btn--primary"} style={{marginTop:'auto'}} onClick={e=>{e.preventDefault();window._openSignup()}}>
+                  Empezar gratis <IconArrowRight size={16}/>
+                </a>
+              )}
             </article>
           ))}
         </div>
         <p style={{textAlign:'center', marginTop:32, fontSize:13.5, color:'var(--muted)'}}>
-          Todos los precios en pesos argentinos. IVA incluido. ¿Necesitás algo a medida? <a href="#" style={{color:'var(--accent)', textDecoration:'underline'}}>Hablá con ventas</a>.
+          Todos los precios en pesos argentinos. IVA incluido. ¿Necesitás algo a medida? <a href="#" style={{color:'var(--accent)', textDecoration:'underline'}} onClick={e=>{e.preventDefault();window._openSales()}}>Hablá con ventas</a>.
         </p>
       </div>
     </section>
@@ -4337,7 +4341,7 @@ function Closing() {
               14 días gratis. Migración asistida sin costo. Si no te enamora, te devolvemos todo —sin preguntas.
             </p>
             <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
-              <a href="#" className="btn btn--primary">Probar gratis <IconArrowRight size={16}/></a>
+              <a href="#" className="btn btn--primary" onClick={e=>{e.preventDefault();window._openSignup()}}>Probar gratis <IconArrowRight size={16}/></a>
               <a href="#" className="btn btn--ghost"><IconChat size={14}/> Hablar con ventas</a>
             </div>
             <div style={{marginTop:32, display:'flex', alignItems:'center', gap:14}}>
@@ -4446,10 +4450,211 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accent": "#C24A1F"
 }/*EDITMODE-END*/;
 
+/* ── Supabase config ──────────────────────────── */
+// ⚠️ Reemplazá estos valores con los de tu proyecto Supabase
+// Panel Supabase → Project Settings → API
+const SB_URL  = 'https://TU_PROYECTO.supabase.co';
+const SB_KEY  = 'TU_ANON_KEY';
+
+async function sbInsert(table, data) {
+  try {
+    await fetch(`${SB_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(data),
+    });
+  } catch(e) { console.warn('Supabase save failed', e); }
+}
+
+/* ── Sales modal ────────────────────────────── */
+function SalesModal({ open, onClose }) {
+  const [form, setForm] = useStateApp({nombre:'',empresa:'',email:'',tel:'',mensaje:''});
+  const [loading, setLoading] = useStateApp(false);
+  const [done, setDone] = useStateApp(false);
+  const set = (k) => (e) => setForm(f => ({...f, [k]: e.target.value}));
+  useEffectApp(() => { if (!open) { setTimeout(() => { setDone(false); setForm({nombre:'',empresa:'',email:'',tel:'',mensaje:''}); }, 300); } }, [open]);
+  const submit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await sbInsert('contactos_ventas', { ...form, source: 'web' });
+    setLoading(false);
+    setDone(true);
+  };
+  const salesFields = [
+    {k:'nombre',  label:'Nombre completo',    type:'text',  ph:'Juan García'},
+    {k:'empresa', label:'Empresa',             type:'text',  ph:'Mi PyME S.A.'},
+    {k:'email',   label:'Email',               type:'email', ph:'vos@empresa.com'},
+    {k:'tel',     label:'Teléfono',            type:'tel',   ph:'+54 11 1234-5678'},
+  ];
+  return (
+    <AuthModal open={open} onClose={onClose}>
+      <button onClick={onClose} style={_closeBtnSt}>✕</button>
+      {done ? (
+        <div style={{textAlign:'center',padding:'20px 0'}}>
+          <div style={{fontSize:48,marginBottom:16}}>💬</div>
+          <h2 style={{fontSize:22,fontWeight:600,margin:'0 0 10px'}}>¡Gracias, {form.nombre.split(' ')[0]}!</h2>
+          <p style={{color:'var(--ink-2)',fontSize:15,margin:'0 0 24px'}}>Te contactamos en menos de 24hs hábiles al email <b>{form.email}</b>.</p>
+          <button className="btn btn--primary" style={{width:'100%',height:48,justifyContent:'center'}} onClick={onClose}>Cerrar</button>
+        </div>
+      ) : (
+        <React.Fragment>
+          <div style={{marginBottom:22}}>
+            <div className="nav__logo" style={{marginBottom:12}}><SumaLogo size={22}/><span>PymeStudio</span></div>
+            <h2 style={{fontSize:22,fontWeight:600,letterSpacing:'-.02em',margin:'0 0 6px'}}>Hablá con ventas</h2>
+            <p style={{fontSize:14,color:'var(--ink-2)',margin:0}}>Te asesoramos y armamos el plan ideal para tu estudio o empresa.</p>
+          </div>
+          <form onSubmit={submit} style={{display:'flex',flexDirection:'column',gap:12}}>
+            {salesFields.map(({k,label,type,ph}) => (
+              <div key={k} style={{display:'flex',flexDirection:'column',gap:5}}>
+                <label style={_labelSt}>{label}</label>
+                <input type={type} required value={form[k]} onChange={set(k)} placeholder={ph} style={_inputSt}/>
+              </div>
+            ))}
+            <div style={{display:'flex',flexDirection:'column',gap:5}}>
+              <label style={_labelSt}>Mensaje (opcional)</label>
+              <textarea rows={3} value={form.mensaje} onChange={set('mensaje')} placeholder="¿En qué podemos ayudarte?" style={{..._inputSt, resize:'vertical', lineHeight:1.5}}/>
+            </div>
+            <button type="submit" disabled={loading} className="btn btn--primary" style={{width:'100%',height:48,fontSize:15,justifyContent:'center',marginTop:4}}>
+              {loading ? 'Enviando…' : <React.Fragment>Enviar consulta <IconArrowRight size={16}/></React.Fragment>}
+            </button>
+          </form>
+        </React.Fragment>
+      )}
+    </AuthModal>
+  );
+}
+
+/* ── Auth Modals ──────────────────────────────── */
+function AuthModal({ open, onClose, children }) {
+  useEffectApp(() => {
+    if (!open) return;
+    const h = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [open]);
+  if (!open) return null;
+  return (
+    <div style={{position:'fixed',inset:0,zIndex:2000,display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}} onClick={onClose}>
+      <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.6)',backdropFilter:'blur(6px)'}}/>
+      <div style={{position:'relative',zIndex:1,background:'var(--bg)',border:'1px solid var(--line)',borderRadius:20,padding:'40px 36px',width:'100%',maxWidth:420,boxShadow:'0 32px 80px rgba(0,0,0,.22)'}} onClick={e=>e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  );
+}
+const _inputSt = {border:'1px solid var(--line)',borderRadius:10,padding:'10px 14px',fontSize:15,background:'var(--bg-2)',color:'var(--ink)',outline:'none',width:'100%',boxSizing:'border-box'};
+const _labelSt = {fontSize:13,color:'var(--ink-2)',fontWeight:500};
+const _closeBtnSt = {position:'absolute',top:14,right:14,background:'none',border:'none',cursor:'pointer',color:'var(--ink-2)',fontSize:18,lineHeight:1,padding:6,borderRadius:6};
+
+function LoginModal({ open, onClose, onSwitch }) {
+  const [email, setEmail] = useStateApp('');
+  const [pass, setPass] = useStateApp('');
+  const [loading, setLoading] = useStateApp(false);
+  useEffectApp(() => { if (!open) { setEmail(''); setPass(''); setLoading(false); } }, [open]);
+  const submit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => { setLoading(false); onClose(); }, 1200);
+  };
+  return (
+    <AuthModal open={open} onClose={onClose}>
+      <button onClick={onClose} style={_closeBtnSt}>✕</button>
+      <div style={{marginBottom:24}}>
+        <div className="nav__logo" style={{marginBottom:12}}><SumaLogo size={22}/><span>PymeStudio</span></div>
+        <h2 style={{fontSize:22,fontWeight:600,letterSpacing:'-.02em',margin:'0 0 6px'}}>Ingresá a tu cuenta</h2>
+        <p style={{fontSize:14,color:'var(--ink-2)',margin:0}}>Continuá gestionando tu PyME.</p>
+      </div>
+      <form onSubmit={submit} style={{display:'flex',flexDirection:'column',gap:14}}>
+        <div style={{display:'flex',flexDirection:'column',gap:5}}>
+          <label style={_labelSt}>Email</label>
+          <input type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="vos@empresa.com" style={_inputSt}/>
+        </div>
+        <div style={{display:'flex',flexDirection:'column',gap:5}}>
+          <label style={_labelSt}>Contraseña</label>
+          <input type="password" required value={pass} onChange={e=>setPass(e.target.value)} placeholder="••••••••" style={_inputSt}/>
+        </div>
+        <a href="#" onClick={e=>e.preventDefault()} style={{fontSize:13,color:'var(--accent)',alignSelf:'flex-end',marginTop:-4}}>¿Olvidaste tu contraseña?</a>
+        <button type="submit" disabled={loading} className="btn btn--primary" style={{width:'100%',height:48,fontSize:15,justifyContent:'center',marginTop:4}}>
+          {loading ? 'Ingresando…' : 'Ingresar'}
+        </button>
+      </form>
+      <p style={{textAlign:'center',fontSize:13,color:'var(--ink-2)',marginTop:20,marginBottom:0}}>
+        ¿No tenés cuenta?{' '}
+        <a href="#" style={{color:'var(--accent)'}} onClick={e=>{e.preventDefault();onSwitch();}}>Probá gratis 14 días</a>
+      </p>
+    </AuthModal>
+  );
+}
+
+function SignupModal({ open, onClose, onSwitch }) {
+  const [form, setForm] = useStateApp({nombre:'',email:'',empresa:'',tel:''});
+  const [loading, setLoading] = useStateApp(false);
+  const [done, setDone] = useStateApp(false);
+  const set = (k) => (e) => setForm(f => ({...f, [k]: e.target.value}));
+  useEffectApp(() => { if (!open) { setTimeout(() => { setDone(false); setForm({nombre:'',email:'',empresa:'',tel:''}); }, 300); } }, [open]);
+  const submit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await sbInsert('leads', { nombre: form.nombre, email: form.email, empresa: form.empresa, tel: form.tel, source: 'web' });
+    setLoading(false); setDone(true);
+  };
+  const fields = [
+    {k:'nombre', label:'Nombre completo', type:'text',  ph:'Juan García'},
+    {k:'email',  label:'Email de trabajo', type:'email', ph:'vos@empresa.com'},
+    {k:'empresa',label:'Empresa',          type:'text',  ph:'Mi PyME S.A.'},
+    {k:'tel',    label:'Teléfono (opcional)', type:'tel', ph:'+54 11 1234-5678'},
+  ];
+  return (
+    <AuthModal open={open} onClose={onClose}>
+      <button onClick={onClose} style={_closeBtnSt}>✕</button>
+      {done ? (
+        <div style={{textAlign:'center',padding:'20px 0'}}>
+          <div style={{fontSize:48,marginBottom:16}}>🎉</div>
+          <h2 style={{fontSize:22,fontWeight:600,margin:'0 0 10px'}}>¡Listo, {form.nombre.split(' ')[0]}!</h2>
+          <p style={{color:'var(--ink-2)',fontSize:15,margin:'0 0 24px'}}>Te enviamos un email a <b>{form.email}</b> para activar tu prueba gratuita de 14 días.</p>
+          <button className="btn btn--primary" style={{width:'100%',height:48,justifyContent:'center'}} onClick={onClose}>Cerrar</button>
+        </div>
+      ) : (
+        <React.Fragment>
+          <div style={{marginBottom:22}}>
+            <div className="nav__logo" style={{marginBottom:12}}><SumaLogo size={22}/><span>PymeStudio</span></div>
+            <h2 style={{fontSize:22,fontWeight:600,letterSpacing:'-.02em',margin:'0 0 6px'}}>Probá gratis 14 días</h2>
+            <p style={{fontSize:14,color:'var(--ink-2)',margin:0}}>Sin tarjeta. Sin compromisos. Cancelás cuando querés.</p>
+          </div>
+          <form onSubmit={submit} style={{display:'flex',flexDirection:'column',gap:12}}>
+            {fields.map(({k,label,type,ph}) => (
+              <div key={k} style={{display:'flex',flexDirection:'column',gap:5}}>
+                <label style={_labelSt}>{label}</label>
+                <input type={type} required={k !== 'tel'} value={form[k]} onChange={set(k)} placeholder={ph} style={_inputSt}/>
+              </div>
+            ))}
+            <button type="submit" disabled={loading} className="btn btn--primary" style={{width:'100%',height:48,fontSize:15,justifyContent:'center',marginTop:6}}>
+              {loading ? 'Creando cuenta…' : <React.Fragment>Empezar prueba gratis <IconArrowRight size={16}/></React.Fragment>}
+            </button>
+          </form>
+          <p style={{textAlign:'center',fontSize:13,color:'var(--ink-2)',marginTop:16,marginBottom:0}}>
+            ¿Ya tenés cuenta?{' '}
+            <a href="#" style={{color:'var(--accent)'}} onClick={e=>{e.preventDefault();onSwitch();}}>Ingresá acá</a>
+          </p>
+        </React.Fragment>
+      )}
+    </AuthModal>
+  );
+}
+
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [scrolled, setScrolled] = useStateApp(false);
   const [menuOpen, setMenuOpen] = useStateApp(false);
+  const [modal, setModal] = useStateApp(null);
+  window._openLogin  = () => setModal('login');
+  window._openSignup = () => setModal('signup');
+  window._openSales  = () => setModal('sales');
 
   useReveal();
 
@@ -4479,13 +4684,16 @@ function App() {
 
   // lock body scroll when drawer open
   useEffectApp(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-  }, [menuOpen]);
+    document.body.style.overflow = (menuOpen || modal) ? 'hidden' : '';
+  }, [menuOpen, modal]);
 
   return (
     <React.Fragment>
       <Nav onOpenMenu={() => setMenuOpen(true)} scrolled={scrolled} />
       <Drawer open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <LoginModal  open={modal==='login'}  onClose={()=>setModal(null)} onSwitch={()=>setModal('signup')}/>
+      <SignupModal open={modal==='signup'} onClose={()=>setModal(null)} onSwitch={()=>setModal('login')}/>
+      <SalesModal  open={modal==='sales'}  onClose={()=>setModal(null)}/>
 
       <main>
         <Hero variant={tweaks.heroVariant}/>
