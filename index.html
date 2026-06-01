@@ -3017,50 +3017,13 @@ const IconYoutube = (p) => (
 // === Brand logo — PymeStudio =============================================
 // 4-piece "S" inscribed in a horizontal hexagon. Recreated from brand ref.
 const SumaLogo = ({ size = 32, color = "#1E4538" }) => (
-  <svg width={size} height={size * (200/220)} viewBox="0 0 220 200" fill="none"
+  <svg width={size} height={size * (220/200)} viewBox="0 0 200 220" fill="none"
        aria-label="PymeStudio" role="img">
     <g fill={color}>
-      {/* TOP-LEFT chunky pentagon — slanted top, vertical right, curved bottom */}
-      <path d="
-        M 50 64
-        L 104 40
-        C 107 39, 110 41, 110 44
-        L 110 110
-        C 110 116, 102 117, 92 115
-        C 74 112, 56 117, 48 113
-        C 45 112, 44 109, 45 106
-        L 50 64 Z
-      "/>
-      {/* TOP-RIGHT leaf — peak upper-right, tail at center */}
-      <path d="
-        M 115 110
-        C 115 92, 128 68, 150 50
-        C 165 40, 180 36, 184 46
-        C 186 56, 174 70, 158 82
-        C 144 96, 130 106, 122 110
-        C 117 111, 114 112, 115 110 Z
-      "/>
-      {/* Bottom half = 180° rotation around (110, 100) */}
-      <g transform="rotate(180 110 100)">
-        <path d="
-          M 50 64
-          L 104 40
-          C 107 39, 110 41, 110 44
-          L 110 110
-          C 110 116, 102 117, 92 115
-          C 74 112, 56 117, 48 113
-          C 45 112, 44 109, 45 106
-          L 50 64 Z
-        "/>
-        <path d="
-          M 115 110
-          C 115 92, 128 68, 150 50
-          C 165 40, 180 36, 184 46
-          C 186 56, 174 70, 158 82
-          C 144 96, 130 106, 122 110
-          C 117 111, 114 112, 115 110 Z
-        "/>
-      </g>
+      <path d="M80,52 L80,130 C80,144 66,152 54,146 C18,132 14,112 14,92 C14,72 18,52 54,38 C66,32 80,40 80,52 Z"/>
+      <path d="M120,168 L120,80 C120,64 134,56 146,64 C168,72 186,92 186,128 C186,162 168,180 146,188 C134,196 120,188 120,168 Z"/>
+      <path d="M80,86 C110,42 158,14 186,36 C158,54 110,94 80,86 Z"/>
+      <path d="M120,134 C90,126 42,166 14,184 C42,206 90,178 120,134 Z"/>
     </g>
   </svg>
 );
@@ -4597,7 +4560,7 @@ function SignupModal({ open, onClose, onSwitch }) {
   const [done, setDone] = useStateApp(false);
   const set = (k) => (e) => setForm(f => ({...f, [k]: e.target.value}));
   useEffectApp(() => { if (!open) { setTimeout(() => { setDone(false); setForm({nombre:'',email:'',empresa:'',tel:''}); }, 300); } }, [open]);
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     setLoading(true);
     await sbInsert('leads', { nombre: form.nombre, email: form.email, empresa: form.empresa, tel: form.tel, source: 'web' });
