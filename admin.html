@@ -154,8 +154,11 @@ tr:hover td { background: var(--bg-3); }
   display: inline-block; padding: 3px 10px; border-radius: 999px;
   font-size: 12px; font-weight: 500; background: var(--bg-3); color: var(--ink-2);
 }
-.pill--web  { background: #ddf1e4; color: #1a5c35; }
-.pill--ventas { background: #fde8de; color: #8b2a0d; }
+.pill--web      { background: #ddf1e4; color: #1a5c35; }
+.pill--ventas   { background: #fde8de; color: #8b2a0d; }
+.pill--active   { background: #ddf1e4; color: #1a5c35; }
+.pill--pending  { background: #fef3c7; color: #92400e; }
+.pill--error    { background: #fde8de; color: #8b2a0d; }
 
 /* tab panels */
 .tab-panel { display: none; }
@@ -171,13 +174,12 @@ tr:hover td { background: var(--bg-3); }
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <svg width="26" height="24" viewBox="0 0 220 200" fill="none">
+      <svg width="24" height="26" viewBox="0 0 200 220" fill="none">
         <g fill="#C24A1F">
-          <path d="M10 60 L70 10 L130 10 L80 60 Z"/>
-          <path d="M80 60 L130 10 L130 90 L80 90 Z"/>
-          <path d="M80 90 L130 90 Q140 90 140 100 Q140 110 130 110 L80 110 Z"/>
-          <path d="M90 110 L150 110 L150 190 L90 160 Z"/>
-          <path d="M90 160 L150 190 L100 190 L80 160 Z"/>
+              <path d="M80,52 L80,130 C80,144 66,152 54,146 C18,132 14,112 14,92 C14,72 18,52 54,38 C66,32 80,40 80,52 Z"/>
+    <path d="M120,168 L120,80 C120,64 134,56 146,64 C168,72 186,92 186,128 C186,162 168,180 146,188 C134,196 120,188 120,168 Z"/>
+    <path d="M80,86 C110,42 158,14 186,36 C158,54 110,94 80,86 Z"/>
+    <path d="M120,134 C90,126 42,166 14,184 C42,206 90,178 120,134 Z"/>
         </g>
       </svg>
       PymeStudio Admin
@@ -197,13 +199,12 @@ tr:hover td { background: var(--bg-3); }
 <div id="app">
   <header class="topbar">
     <div class="topbar-logo">
-      <svg width="22" height="20" viewBox="0 0 220 200" fill="none">
+      <svg width="20" height="22" viewBox="0 0 200 220" fill="none">
         <g fill="#C24A1F">
-          <path d="M10 60 L70 10 L130 10 L80 60 Z"/>
-          <path d="M80 60 L130 10 L130 90 L80 90 Z"/>
-          <path d="M80 90 L130 90 Q140 90 140 100 Q140 110 130 110 L80 110 Z"/>
-          <path d="M90 110 L150 110 L150 190 L90 160 Z"/>
-          <path d="M90 160 L150 190 L100 190 L80 160 Z"/>
+              <path d="M80,52 L80,130 C80,144 66,152 54,146 C18,132 14,112 14,92 C14,72 18,52 54,38 C66,32 80,40 80,52 Z"/>
+    <path d="M120,168 L120,80 C120,64 134,56 146,64 C168,72 186,92 186,128 C186,162 168,180 146,188 C134,196 120,188 120,168 Z"/>
+    <path d="M80,86 C110,42 158,14 186,36 C158,54 110,94 80,86 Z"/>
+    <path d="M120,134 C90,126 42,166 14,184 C42,206 90,178 120,134 Z"/>
         </g>
       </svg>
       PymeStudio
@@ -234,6 +235,11 @@ tr:hover td { background: var(--bg-3); }
         <div class="stat-sub">últimos 7 días</div>
       </div>
       <div class="stat-card">
+        <div class="stat-label">Total cobrado</div>
+        <div class="stat-num" id="stat-cobrado">—</div>
+        <div class="stat-sub">pagos aprobados MP</div>
+      </div>
+      <div class="stat-card">
         <div class="stat-label">Consultas ventas</div>
         <div class="stat-num" id="stat-ventas">—</div>
         <div class="stat-sub">Estudio / enterprise</div>
@@ -244,6 +250,7 @@ tr:hover td { background: var(--bg-3); }
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('leads',this)">Registros</button>
       <button class="tab-btn" onclick="switchTab('ventas',this)">Consultas ventas</button>
+      <button class="tab-btn" onclick="switchTab('pagos',this)">Pagos MP</button>
     </div>
 
     <!-- Leads table -->
@@ -305,14 +312,47 @@ tr:hover td { background: var(--bg-3); }
         </div>
       </div>
     </div>
+    <!-- Pagos table -->
+    <div class="tab-panel" id="tab-pagos">
+      <div class="table-card">
+        <div class="table-head">
+          <div style="display:flex;align-items:center;gap:10px">
+            <h2>Pagos — Mercado Pago</h2>
+            <span class="count-badge" id="pagos-count">0</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span id="pagos-total-badge" style="font-size:14px;font-weight:600;color:var(--green,#1E7A4A)"></span>
+            <button class="refresh-btn" onclick="loadPagos()">↻ Actualizar</button>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Email</th>
+                <th>Plan</th>
+                <th>Billing</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>ID MP</th>
+              </tr>
+            </thead>
+            <tbody id="pagos-tbody">
+              <tr class="loading-row"><td colspan="7">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
 <script>
 // ⚠️ Configuración — reemplazá con tus valores de Supabase
 // Panel: https://supabase.com → Project Settings → API
-const SB_URL  = 'https://TU_PROYECTO.supabase.co';
-const SB_KEY  = 'TU_ANON_KEY'; // anon key (pública)
+const SB_URL  = 'https://whticmhoitnhcudjsgyj.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndodGljbWhvaXRuaGN1ZGpzZ3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzEwNjEsImV4cCI6MjA5NjQwNzA2MX0.D-mNYsKh_dTuSpOevsZyaUBmwM9LiRk0EVMt-fc4SRY'; // anon key (pública)
 
 // Contraseña del panel de administración
 const ADMIN_PW = 'pymestudio2026';
@@ -376,7 +416,7 @@ async function sbFetch(table, params = '') {
 let leadsData = [], ventasData = [];
 
 async function loadAll() {
-  await Promise.all([loadLeads(), loadVentas()]);
+  await Promise.all([loadLeads(), loadVentas(), loadPagos()]);
 }
 
 function fmtDate(iso) {
@@ -435,6 +475,53 @@ async function loadVentas() {
       </tr>`).join('');
   } catch(e) {
     tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Error al cargar: ${e.message}</td></tr>`;
+  }
+}
+
+async function loadPagos() {
+  const tbody = document.getElementById('pagos-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="7">Cargando…</td></tr>';
+  try {
+    const data = await sbFetch('pagos');
+    document.getElementById('pagos-count').textContent = data.length;
+
+    // Sumar total aprobado
+    const totalCobrado = data
+      .filter(p => p.estado === 'aprobado')
+      .reduce((sum, p) => sum + (p.monto || 0), 0);
+
+    const fmt = new Intl.NumberFormat('es-AR', { style:'currency', currency:'ARS', maximumFractionDigits:0 });
+    document.getElementById('stat-cobrado').textContent = fmt.format(totalCobrado);
+    if (data.length) {
+      document.getElementById('pagos-total-badge').textContent = fmt.format(totalCobrado) + ' total';
+    }
+
+    if (!data.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="7">Sin pagos registrados aún.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.map(p => {
+      const planLabel = p.plan ? (p.plan.charAt(0).toUpperCase() + p.plan.slice(1)) : '—';
+      const billingLabel = p.billing === 'yearly' ? 'Anual' : p.billing === 'monthly' ? 'Mensual' : (p.billing || '—');
+      const estadoPill = p.estado === 'aprobado'
+        ? '<span class="pill pill--active">Aprobado</span>'
+        : p.estado === 'pendiente'
+          ? '<span class="pill pill--pending">Pendiente</span>'
+          : `<span class="pill pill--error">${esc(p.estado)}</span>`;
+      return `<tr>
+        <td style="color:var(--muted);white-space:nowrap">${fmtDate(p.created_at)}</td>
+        <td><a href="mailto:${esc(p.email)}" style="color:var(--accent)">${esc(p.email)||'—'}</a></td>
+        <td style="font-weight:600">${planLabel}</td>
+        <td>${billingLabel}</td>
+        <td style="font-weight:600">${p.monto != null ? fmt.format(p.monto) : '—'}</td>
+        <td>${estadoPill}</td>
+        <td style="font-size:12px;color:var(--muted);font-family:monospace">${esc(p.mp_payment_id)||'—'}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="7">Error: ${e.message}<br><small>Asegurate de haber creado la tabla <strong>pagos</strong> en Supabase.</small></td></tr>`;
+    document.getElementById('stat-cobrado').textContent = '—';
   }
 }
 

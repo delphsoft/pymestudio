@@ -253,6 +253,20 @@ textarea:focus{border-color:var(--accent)}
 .section-title{font-size:20px;font-weight:600;letter-spacing:-.02em;margin-bottom:20px}
 .divider{height:1px;background:var(--line);margin:24px 0}
 
+/* Plan selector */
+.plan-option{
+  border:2px solid var(--line);border-radius:var(--radius);padding:18px 20px;
+  cursor:pointer;transition:border-color .15s,background .15s;
+}
+.plan-option:hover{border-color:var(--accent-2);background:var(--bg-3)}
+.plan-option.selected{border-color:var(--accent);background:var(--bg-3)}
+
+/* Payment alerts */
+.alert{padding:14px 18px;border-radius:10px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px}
+.alert--ok{background:var(--green-bg);color:var(--green)}
+.alert--err{background:#fde8de;color:#8b2a0d}
+.alert--pending{background:#fef3c7;color:#92400e}
+
 /* loading spinner */
 .spinner{
   width:20px;height:20px;border:2px solid var(--line);
@@ -278,13 +292,12 @@ textarea:focus{border-color:var(--accent)}
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
-      <svg width="24" height="22" viewBox="0 0 220 200" fill="none">
+      <svg width="22" height="24" viewBox="0 0 200 220" fill="none">
         <g fill="#C24A1F">
-          <path d="M10 60 L70 10 L130 10 L80 60 Z"/>
-          <path d="M80 60 L130 10 L130 90 L80 90 Z"/>
-          <path d="M80 90 L130 90 Q140 90 140 100 Q140 110 130 110 L80 110 Z"/>
-          <path d="M90 110 L150 110 L150 190 L90 160 Z"/>
-          <path d="M90 160 L150 190 L100 190 L80 160 Z"/>
+              <path d="M80,52 L80,130 C80,144 66,152 54,146 C18,132 14,112 14,92 C14,72 18,52 54,38 C66,32 80,40 80,52 Z"/>
+    <path d="M120,168 L120,80 C120,64 134,56 146,64 C168,72 186,92 186,128 C186,162 168,180 146,188 C134,196 120,188 120,168 Z"/>
+    <path d="M80,86 C110,42 158,14 186,36 C158,54 110,94 80,86 Z"/>
+    <path d="M120,134 C90,126 42,166 14,184 C42,206 90,178 120,134 Z"/>
         </g>
       </svg>
       PymeStudio
@@ -334,7 +347,7 @@ textarea:focus{border-color:var(--accent)}
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
-        <svg width="22" height="20" viewBox="0 0 220 200" fill="none">
+        <svg width="20" height="22" viewBox="0 0 200 220" fill="none">
           <g fill="#C24A1F">
             <path d="M10 60 L70 10 L130 10 L80 60 Z"/>
             <path d="M80 60 L130 10 L130 90 L80 90 Z"/>
@@ -357,6 +370,10 @@ textarea:focus{border-color:var(--accent)}
         <button class="nav-item" onclick="goTo('servicios',this)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
           Servicios
+        </button>
+        <button class="nav-item" onclick="goTo('pagos',this)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Pagos
         </button>
         <button class="nav-item" onclick="goTo('soporte',this)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -478,6 +495,79 @@ textarea:focus{border-color:var(--accent)}
           <div class="services-grid" id="services-grid"></div>
         </div>
 
+        <!-- ── PAGOS ── -->
+        <div class="section" id="sec-pagos">
+
+          <!-- Alerta retorno desde MP -->
+          <div id="pago-alert" style="display:none;margin-bottom:20px"></div>
+
+          <!-- Hero plan + acción de pago -->
+          <div class="plan-hero" id="pagos-plan-hero" style="margin-bottom:24px">
+            <div>
+              <div class="plan-name" id="pagos-plan-name">PLAN</div>
+              <div style="display:flex;align-items:baseline;gap:10px;margin-top:4px">
+                <div class="plan-amount" id="pagos-plan-amount">—</div>
+                <span style="font-size:14px;opacity:.6" id="pagos-plan-period"></span>
+              </div>
+              <div style="font-size:14px;opacity:.7;margin-top:8px" id="pagos-plan-status-txt">—</div>
+            </div>
+            <div class="plan-actions">
+              <button class="btn-upgrade" id="btn-pagar-mp" onclick="initMPPayment('monthly')">
+                <span id="btn-pagar-txt">Pagar con Mercado Pago</span>
+              </button>
+              <button class="btn-outline" onclick="initMPPayment('yearly')" id="btn-pagar-anual">Pagar anual (−20%)</button>
+            </div>
+          </div>
+
+          <!-- Selector de plan (para upgrades) -->
+          <div class="card" style="margin-bottom:24px">
+            <h2>Cambiar plan</h2>
+            <p class="sub" style="margin-top:4px;margin-bottom:18px">Seleccioná el plan y hacé clic en "Pagar". El cambio es inmediato una vez confirmado el pago.</p>
+            <div class="grid-2" id="plan-selector">
+              <div class="plan-option" data-plan="inicial" onclick="selectPlan('inicial')">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                  <span style="font-weight:600;font-size:15px">Inicial</span>
+                  <span class="pill pill--inactive" id="plan-opt-badge-inicial">$ 25.000/mes</span>
+                </div>
+                <p style="font-size:13px;color:var(--ink-2);margin:0">Monotributistas y emprendedores. Facturación + ARCA.</p>
+              </div>
+              <div class="plan-option" data-plan="negocio" onclick="selectPlan('negocio')">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                  <span style="font-weight:600;font-size:15px">Negocio</span>
+                  <span class="pill pill--inactive" id="plan-opt-badge-negocio">$ 40.000/mes</span>
+                </div>
+                <p style="font-size:13px;color:var(--ink-2);margin:0">PyMEs con empleados y contador. Stock + BI + multi-usuario.</p>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--ink-2);margin-top:14px">¿Necesitás el plan Estudio? <a href="mailto:hola@pymestudio.xyz" style="color:var(--accent)">Escribinos</a> y te preparamos una propuesta.</p>
+          </div>
+
+          <!-- Historial de pagos -->
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <h2>Historial de pagos</h2>
+              <span class="pill pill--inactive" id="pagos-count">0 pagos</span>
+            </div>
+            <div id="pagos-empty" style="text-align:center;padding:32px 0;color:var(--muted);font-size:14px">
+              Todavía no hay pagos registrados en tu cuenta.
+            </div>
+            <div style="overflow-x:auto;display:none" id="pagos-table-wrap">
+              <table style="width:100%;border-collapse:collapse;font-size:14px" id="pagos-table">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--line);text-align:left">
+                    <th style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Fecha</th>
+                    <th style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Plan</th>
+                    <th style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Monto</th>
+                    <th style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Estado</th>
+                    <th style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">ID MP</th>
+                  </tr>
+                </thead>
+                <tbody id="pagos-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- ── SOPORTE ── -->
         <div class="section" id="sec-soporte">
           <div class="soporte-grid" style="margin-bottom:24px">
@@ -518,8 +608,8 @@ textarea:focus{border-color:var(--accent)}
 
 <script>
 // ⚠️ Reemplazá con tus valores de Supabase
-const SB_URL = 'https://TU_PROYECTO.supabase.co';
-const SB_KEY = 'TU_ANON_KEY';
+const SB_URL = 'https://whticmhoitnhcudjsgyj.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndodGljbWhvaXRuaGN1ZGpzZ3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzEwNjEsImV4cCI6MjA5NjQwNzA2MX0.D-mNYsKh_dTuSpOevsZyaUBmwM9LiRk0EVMt-fc4SRY';
 
 const { createClient } = supabase;
 const sb = createClient(SB_URL, SB_KEY);
@@ -644,6 +734,7 @@ function showApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   renderAll();
+  checkMPReturn();
 }
 
 function renderAll() {
@@ -726,19 +817,180 @@ function statusClass(s) {
 }
 
 // ── Nav ───────────────────────────────────────
-const TITLES = { dashboard:'Dashboard', plan:'Mi Plan', servicios:'Servicios', soporte:'Soporte' };
+const TITLES = { dashboard:'Dashboard', plan:'Mi Plan', servicios:'Servicios', pagos:'Pagos', soporte:'Soporte' };
 function goTo(id, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + id).classList.add('active');
   if (btn) btn.classList.add('active');
   document.getElementById('topbar-title').textContent = TITLES[id] || id;
+  if (id === 'pagos') { renderPagosSection(); loadPagos(); }
   closeSidebar();
 }
 
 // ── Sidebar mobile ────────────────────────────
 function openSidebar()  { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
 function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+// ── Pagos & MercadoPago ────────────────────────
+let selectedPlan = null;
+let pagosLoaded  = false;
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.querySelectorAll('.plan-option').forEach(el => {
+    el.classList.toggle('selected', el.dataset.plan === plan);
+  });
+  // Actualizar botones de pago
+  const label = plan === 'inicial' ? '$25.000/mes' : '$40.000/mes';
+  document.getElementById('btn-pagar-txt').textContent = `Pagar Plan ${plan.charAt(0).toUpperCase()+plan.slice(1)} — ${label}`;
+}
+
+function renderPagosSection() {
+  const plan    = (profile && profile.plan) || 'inicial';
+  const status  = (profile && profile.plan_status) || 'trial';
+  const planInfo= PLAN_DATA[plan] || PLAN_DATA.inicial;
+
+  document.getElementById('pagos-plan-name').textContent   = 'PLAN ' + planInfo.label.toUpperCase();
+  document.getElementById('pagos-plan-amount').textContent = planInfo.amount;
+  document.getElementById('pagos-plan-period').textContent = planInfo.period || '';
+  document.getElementById('pagos-plan-status-txt').textContent = statusLabel(status);
+
+  // Seleccionar plan activo por defecto
+  if (!selectedPlan) selectPlan(plan);
+
+  // Botón pagar: si ya está activo, cambiar texto
+  if (status === 'active') {
+    document.getElementById('btn-pagar-txt').textContent = 'Renovar / Cambiar plan';
+  }
+}
+
+async function loadPagos() {
+  if (pagosLoaded) return;
+  pagosLoaded = true;
+
+  const { data, error } = await sb
+    .from('pagos')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  const rows    = data || [];
+  const countEl = document.getElementById('pagos-count');
+  const empty   = document.getElementById('pagos-empty');
+  const wrap    = document.getElementById('pagos-table-wrap');
+  const tbody   = document.getElementById('pagos-tbody');
+
+  countEl.textContent = `${rows.length} pago${rows.length !== 1 ? 's' : ''}`;
+
+  if (rows.length === 0) {
+    empty.style.display = 'block';
+    wrap.style.display  = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  wrap.style.display  = 'block';
+
+  tbody.innerHTML = rows.map(p => {
+    const fecha = new Date(p.created_at).toLocaleDateString('es-AR', { day:'2-digit', month:'short', year:'numeric' });
+    const monto = p.monto != null
+      ? new Intl.NumberFormat('es-AR', { style:'currency', currency:'ARS', maximumFractionDigits:0 }).format(p.monto)
+      : '—';
+    const estadoPill = p.estado === 'aprobado'
+      ? '<span class="pill pill--active">Aprobado</span>'
+      : p.estado === 'pendiente'
+        ? '<span class="pill pill--trial">Pendiente</span>'
+        : `<span class="pill pill--inactive">${p.estado}</span>`;
+    const planLabel = p.plan ? (p.plan.charAt(0).toUpperCase()+p.plan.slice(1)) : '—';
+    const billing   = p.billing === 'yearly' ? ' (anual)' : p.billing === 'monthly' ? ' (mensual)' : '';
+
+    return `<tr style="border-bottom:1px solid var(--line)">
+      <td style="padding:12px 12px">${fecha}</td>
+      <td style="padding:12px 12px;font-weight:500">${planLabel}${billing}</td>
+      <td style="padding:12px 12px;font-weight:600">${monto}</td>
+      <td style="padding:12px 12px">${estadoPill}</td>
+      <td style="padding:12px 12px;font-size:12px;color:var(--muted);font-family:monospace">${p.mp_payment_id || '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function initMPPayment(billing = 'monthly') {
+  const plan = selectedPlan || (profile && profile.plan) || 'inicial';
+  if (plan === 'estudio') {
+    window.location.href = 'mailto:hola@pymestudio.xyz?subject=Consulta%20Plan%20Estudio';
+    return;
+  }
+
+  const btn = document.getElementById('btn-pagar-mp');
+  const origTxt = btn.innerHTML;
+  btn.disabled  = true;
+  btn.innerHTML = '<span style="display:flex;align-items:center;gap:8px"><span class="spinner" style="width:16px;height:16px;border-width:2px"></span> Procesando…</span>';
+
+  try {
+    const res = await fetch('/api/mp-preference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plan,
+        email:   currentUser.email,
+        nombre:  profile?.nombre || '',
+        user_id: currentUser.id,
+        billing,
+      }),
+    });
+
+    if (!res.ok) throw new Error((await res.json()).error || 'Error del servidor');
+    const { init_point, sandbox_init_point } = await res.json();
+
+    // Redirigir a MP Checkout
+    // En desarrollo usá sandbox_init_point; en producción init_point
+    window.location.href = init_point || sandbox_init_point;
+
+  } catch (err) {
+    const alert = document.getElementById('pago-alert');
+    alert.className  = 'alert alert--err';
+    alert.innerHTML  = `⚠️ ${err.message}. Intentá de nuevo o <a href="mailto:hola@pymestudio.xyz" style="color:inherit;text-decoration:underline">contactanos</a>.`;
+    alert.style.display = 'flex';
+    btn.disabled  = false;
+    btn.innerHTML = origTxt;
+  }
+}
+
+// Manejar retorno desde MP (?pago=ok|error|pendiente)
+function checkMPReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const pago   = params.get('pago');
+  const plan   = params.get('plan');
+  if (!pago) return;
+
+  // Ir a sección pagos y mostrar alerta
+  const navBtn = document.querySelector('[onclick*=pagos]');
+  goTo('pagos', navBtn);
+
+  const alert = document.getElementById('pago-alert');
+  if (pago === 'ok') {
+    alert.className = 'alert alert--ok';
+    alert.innerHTML = `✓ ¡Pago aprobado! Tu plan${plan ? ' <b>'+plan.charAt(0).toUpperCase()+plan.slice(1)+'</b>' : ''} está activo. En unos segundos se actualiza tu cuenta.`;
+    // Recargar perfil
+    setTimeout(async () => {
+      await loadProfile();
+      renderAll();
+      pagosLoaded = false;
+      loadPagos();
+    }, 2500);
+  } else if (pago === 'error') {
+    alert.className = 'alert alert--err';
+    alert.innerHTML = '⚠️ El pago no pudo completarse. Podés intentarlo de nuevo o <a href="mailto:hola@pymestudio.xyz" style="color:inherit;text-decoration:underline">contactarnos</a>.';
+  } else if (pago === 'pendiente') {
+    alert.className = 'alert alert--pending';
+    alert.innerHTML = '⏳ Tu pago está pendiente de confirmación. Te avisamos por email cuando se acredite.';
+  }
+  alert.style.display = 'flex';
+
+  // Limpiar URL sin recargar
+  window.history.replaceState({}, '', window.location.pathname);
+}
 
 // ── Soporte ticket ────────────────────────────
 async function sendTicket() {

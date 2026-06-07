@@ -62,14 +62,18 @@ module.exports = async (req, res) => {
       }),
     });
 
-    // 5. Email de confirmación con Resend (opcional)
-    if (process.env.RESEND_API_KEY) {
+    // 5. Email de confirmación con Resend
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ RESEND_API_KEY no está configurada — no se envía email');
+    } else if (!payment.payer?.email) {
+      console.warn('⚠️ El pago no trae email del comprador — no se envía email');
+    } else {
       const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
       const amount = new Intl.NumberFormat('es-AR', {
         style: 'currency', currency: 'ARS', maximumFractionDigits: 0,
       }).format(payment.transaction_amount);
 
-      await fetch('https://api.resend.com/emails', {
+      const emailRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
@@ -89,6 +93,13 @@ module.exports = async (req, res) => {
           }),
         }),
       });
+
+      const emailBody = await emailRes.json().catch(() => ({}));
+      if (emailRes.ok) {
+        console.log('✅ Email enviado a', payment.payer.email, '— id:', emailBody.id);
+      } else {
+        console.error('❌ Resend rechazó el email:', emailRes.status, JSON.stringify(emailBody));
+      }
     }
   } catch (err) {
     console.error('Webhook error:', err);

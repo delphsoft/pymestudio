@@ -1,15 +1,6 @@
 <!doctype html>
 <html lang="es-AR">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SXM2JN2F2F"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SXM2JN2F2F');
-</script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>PymeStudio — Gestión ágil para tu PyME</title>
@@ -4425,8 +4416,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 /* ── Supabase config ──────────────────────────── */
 // ⚠️ Reemplazá estos valores con los de tu proyecto Supabase
 // Panel Supabase → Project Settings → API
-const SB_URL  = 'https://TU_PROYECTO.supabase.co';
-const SB_KEY  = 'TU_ANON_KEY';
+const SB_URL  = 'https://whticmhoitnhcudjsgyj.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndodGljbWhvaXRuaGN1ZGpzZ3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzEwNjEsImV4cCI6MjA5NjQwNzA2MX0.D-mNYsKh_dTuSpOevsZyaUBmwM9LiRk0EVMt-fc4SRY';
 
 async function sbInsert(table, data) {
   try {
@@ -4441,6 +4432,29 @@ async function sbInsert(table, data) {
       body: JSON.stringify(data),
     });
   } catch(e) { console.warn('Supabase save failed', e); }
+}
+
+// Crea el usuario en Supabase Auth → dispara el email de confirmación/bienvenida.
+// metadata (nombre, empresa, tel) va a raw_user_meta_data y lo usa el trigger handle_new_user.
+async function sbSignUp({ email, password, metadata }) {
+  const res = await fetch(`${SB_URL}/auth/v1/signup`, {
+    method: 'POST',
+    headers: {
+      'apikey': SB_KEY,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      data: metadata || {},
+      options: { emailRedirectTo: window.location.origin + '/portal.html' },
+    }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.msg || body.error_description || body.error || 'No se pudo crear la cuenta');
+  }
+  return body;
 }
 
 /* ── Sales modal ────────────────────────────── */
@@ -4564,20 +4578,39 @@ function LoginModal({ open, onClose, onSwitch }) {
 }
 
 function SignupModal({ open, onClose, onSwitch }) {
-  const [form, setForm] = useStateApp({nombre:'',email:'',empresa:'',tel:''});
+  const [form, setForm] = useStateApp({nombre:'',email:'',empresa:'',tel:'',password:''});
   const [loading, setLoading] = useStateApp(false);
   const [done, setDone] = useStateApp(false);
+  const [error, setError] = useStateApp('');
   const set = (k) => (e) => setForm(f => ({...f, [k]: e.target.value}));
-  useEffectApp(() => { if (!open) { setTimeout(() => { setDone(false); setForm({nombre:'',email:'',empresa:'',tel:''}); }, 300); } }, [open]);
+  useEffectApp(() => { if (!open) { setTimeout(() => { setDone(false); setError(''); setForm({nombre:'',email:'',empresa:'',tel:'',password:''}); }, 300); } }, [open]);
   const submit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    await sbInsert('leads', { nombre: form.nombre, email: form.email, empresa: form.empresa, tel: form.tel, source: 'web' });
-    setLoading(false); setDone(true);
+    if (form.password.length < 6) { setError('La contraseña debe tener al menos 6 caracteres.'); return; }
+    setLoading(true); setError('');
+    try {
+      // 1. Crear cuenta en Supabase Auth → dispara el email de bienvenida
+      await sbSignUp({
+        email: form.email,
+        password: form.password,
+        metadata: { nombre: form.nombre, empresa: form.empresa, tel: form.tel },
+      });
+      // 2. Guardar lead para el CRM (no bloquea el registro si falla)
+      sbInsert('leads', { nombre: form.nombre, email: form.email, empresa: form.empresa, tel: form.tel, source: 'web' });
+      setDone(true);
+    } catch (err) {
+      const msg = /already registered|already been registered|User already/i.test(err.message)
+        ? 'Ya existe una cuenta con ese email. Probá ingresar.'
+        : err.message;
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
   const fields = [
     {k:'nombre', label:'Nombre completo', type:'text',  ph:'Juan García'},
     {k:'email',  label:'Email de trabajo', type:'email', ph:'vos@empresa.com'},
+    {k:'password', label:'Contraseña', type:'password', ph:'Mínimo 6 caracteres'},
     {k:'empresa',label:'Empresa',          type:'text',  ph:'Mi PyME S.A.'},
     {k:'tel',    label:'Teléfono (opcional)', type:'tel', ph:'+54 11 1234-5678'},
   ];
@@ -4605,6 +4638,9 @@ function SignupModal({ open, onClose, onSwitch }) {
                 <input type={type} required={k !== 'tel'} value={form[k]} onChange={set(k)} placeholder={ph} style={_inputSt}/>
               </div>
             ))}
+            {error && (
+              <div style={{background:'#FDECEA',color:'#B42318',fontSize:13,borderRadius:8,padding:'10px 12px',lineHeight:1.4}}>{error}</div>
+            )}
             <button type="submit" disabled={loading} className="btn btn--primary" style={{width:'100%',height:48,fontSize:15,justifyContent:'center',marginTop:6}}>
               {loading ? 'Creando cuenta…' : <React.Fragment>Empezar prueba gratis <IconArrowRight size={16}/></React.Fragment>}
             </button>
