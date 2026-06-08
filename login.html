@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Iniciar sesión — PymeStudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:      #F4EFE6;
+  --bg-2:    #EBE4D5;
+  --ink:     #1A1A1A;
+  --ink-2:   #3A3A36;
+  --muted:   #7A746A;
+  --line:    rgba(26,26,26,.10);
+  --line-2:  rgba(26,26,26,.18);
+  --accent:  #C24A1F;
+  --forest:  #1E4538;
+  --paper:   #FBF8F1;
+  --r:       12px;
+  --font:    "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+
+html[data-theme="dark"]{
+  --bg:    #14130F;
+  --bg-2:  #1C1A15;
+  --ink:   #F4EFE6;
+  --ink-2: #D8D2C5;
+  --muted: #8A8275;
+  --line:  rgba(244,239,230,.10);
+  --paper: #201E19;
+}
+
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  -webkit-font-smoothing:antialiased;
+}
+
+.card{
+  width:100%;
+  max-width:400px;
+  background:var(--paper);
+  border:1px solid var(--line-2);
+  border-radius:20px;
+  padding:40px;
+  box-shadow:0 1px 0 rgba(26,26,26,.05),0 24px 60px -30px rgba(26,26,26,.18);
+}
+
+.logo{
+  display:flex;align-items:center;gap:10px;
+  text-decoration:none;margin-bottom:32px;
+}
+.logo-mark{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--forest);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.logo-mark svg{width:18px;height:20px}
+.logo-name{font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.02em}
+
+h1{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-bottom:6px;color:var(--ink)}
+.subtitle{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.5}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px;letter-spacing:.02em;text-transform:uppercase}
+.field input{
+  width:100%;padding:11px 14px;
+  background:var(--bg);
+  border:1px solid var(--line-2);
+  border-radius:var(--r);
+  font-size:14px;font-family:var(--font);color:var(--ink);
+  outline:none;transition:border-color .15s;
+}
+.field input:focus{border-color:var(--forest)}
+.field input::placeholder{color:var(--muted);opacity:.7}
+
+.btn{
+  width:100%;padding:13px;
+  background:var(--forest);color:#fff;
+  border:none;border-radius:var(--r);
+  font-size:14px;font-weight:500;font-family:var(--font);
+  cursor:pointer;transition:opacity .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:8px;
+}
+.btn:hover{opacity:.88}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.error{
+  display:none;
+  color:var(--accent);
+  font-size:13px;
+  margin-top:12px;
+  padding:10px 14px;
+  background:rgba(194,74,31,.08);
+  border-radius:var(--r);
+  border:1px solid rgba(194,74,31,.15);
+}
+
+.footer-link{
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+  margin-top:20px;
+}
+.footer-link a{color:var(--accent);text-decoration:none}
+.footer-link a:hover{text-decoration:underline}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin .8s linear infinite}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <a href="/" class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 10 L185 57.5 V152.5 L100 200 L15 152.5 V57.5 Z" fill="#CCE2BD"/>
+        <path d="M100 40 L160 74 V142 L100 176 L40 142 V74 Z" fill="#1E4538"/>
+      </svg>
+    </div>
+    <span class="logo-name">PymeStudio</span>
+  </a>
+
+  <h1>Iniciá sesión</h1>
+  <p class="subtitle">Accedé a tu suite de gestión</p>
+
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="login-email" placeholder="vos@empresa.com" autocomplete="email"
+      onkeydown="if(event.key==='Enter')doLogin()"/>
+  </div>
+  <div class="field">
+    <label>Contraseña</label>
+    <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')doLogin()"/>
+  </div>
+
+  <div class="error" id="login-error"></div>
+
+  <button class="btn" id="login-btn" onclick="doLogin()">
+    Ingresar
+  </button>
+
+  <div class="footer-link" style="margin-top:16px">
+    <a href="#" onclick="showForgot();return false">¿Olvidaste tu contraseña?</a>
+  </div>
+  <div class="footer-link">
+    ¿No tenés cuenta? <a href="/">Probá gratis 14 días →</a>
+  </div>
+</div>
+
+<script>
+// Tema guardado
+const savedTheme = localStorage.getItem('ps_theme') || 'light'
+document.documentElement.setAttribute('data-theme', savedTheme)
+
+const ALLOWED_REDIRECTS = ['pymestudio.xyz', 'vercel.app', 'localhost']
+
+function getRedirect() {
+  return new URLSearchParams(window.location.search).get('redirect') || ''
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim()
+  const pass  = document.getElementById('login-pass').value
+  const errEl = document.getElementById('login-error')
+  const btn   = document.getElementById('login-btn')
+
+  if (!email || !pass) {
+    showErr('Completá email y contraseña.')
+    return
+  }
+
+  btn.disabled = true
+  btn.innerHTML = '<span class="spin">⟳</span> Ingresando…'
+  errEl.style.display = 'none'
+
+  try {
+    const res  = await fetch('/api/login', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email, password: pass }),
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Error al iniciar sesión')
+
+    const token    = data.token
+    const rawRedir = getRedirect()
+    let destination = null
+
+    if (rawRedir) {
+      try {
+        const url = new URL(decodeURIComponent(rawRedir))
+        const ok  = ALLOWED_REDIRECTS.some(d => url.hostname === d || url.hostname.endsWith('.' + d))
+        if (ok) destination = url.origin + '?token=' + encodeURIComponent(token)
+      } catch {}
+    }
+
+    if (!destination) {
+      // Sin redirect → portal propio
+      localStorage.setItem('ff_jwt', token)
+      window.location.href = '/portal'
+      return
+    }
+
+    window.location.href = destination
+  } catch (e) {
+    showErr(e.message)
+    btn.disabled = false
+    btn.innerHTML = 'Ingresar'
+  }
+}
+
+function showErr(msg) {
+  const el = document.getElementById('login-error')
+  el.textContent = msg
+  el.style.display = 'block'
+}
+
+function showForgot() {
+  // Por ahora redirige a portal donde está el flujo completo
+  window.location.href = '/portal'
+}
+</script>
+</body>
+</html>
