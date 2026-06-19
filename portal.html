@@ -682,29 +682,21 @@ async function doLogout() {
 
 // ── Abrir DashBI con token SSO ───────────────────────────────
 function openDashBI() {
-  const jwt = localStorage.getItem('ff_jwt')
-  if (jwt) {
-    window.open('https://dashbi.pymestudio.xyz?token=' + encodeURIComponent(jwt), '_blank')
-  } else {
-    // Intentar obtener sesión de Supabase
-    sb.auth.getSession().then(({ data }) => {
-      const token = data?.session?.access_token
-      if (token) {
-        window.open('https://dashbi.pymestudio.xyz?token=' + encodeURIComponent(token), '_blank')
-      } else {
-        window.open('https://dashbi.pymestudio.xyz', '_blank')
-      }
-    })
-  }
+  window.open('https://dashbi.pymestudio.xyz', '_blank')
 }
 
 // Auth state listener
 sb.auth.onAuthStateChange(async (event, session) => {
   if (session) {
     currentUser = session.user;
+    // Guardar access_token como ff_jwt para SSO con DashBI
+    if (session.access_token) {
+      localStorage.setItem('ff_jwt', session.access_token);
+    }
     await loadProfile();
     showApp();
   } else {
+    localStorage.removeItem('ff_jwt');
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
   }
