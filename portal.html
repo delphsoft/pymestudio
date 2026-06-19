@@ -700,27 +700,38 @@ document.getElementById('login-pass').addEventListener('keydown', e => {
 // ── Profile loading ───────────────────────────
 const PLAN_DATA = {
   inicial: {
-    label: 'Inicial', amount: '$25.000', period: '/mes',
-    desc: 'Para monotributistas y emprendedores.',
-    features: ['Facturas A, B, C, M ilimitadas','Conexión ARCA','Cobros con Mercado Pago','1 usuario','Soporte por chat']
+    label: 'Compliance', amount: 'USD 19', period: '/mes',
+    desc: 'Para monotributistas y PyMEs que necesitan compliance fiscal completo.',
+    features: ['Facturas A, B, C, M ilimitadas','Conexión ARCA · CAE real','Vencimientos + alertas automáticas','Dashboard BI contable','Cobros con Mercado Pago','Soporte por chat']
   },
   negocio: {
-    label: 'Negocio', amount: '$40.000', period: '/mes',
-    desc: 'Para PyMEs con empleados y contador.',
-    features: ['Todo el plan Inicial','Contabilidad + Libro IVA','Stock multi-depósito','Hasta 5 usuarios + contador','Reportes en vivo','Soporte prioritario']
+    label: 'Campo', amount: 'USD 29', period: '/mes',
+    desc: 'Para productores agropecuarios y empresas del sector.',
+    features: ['Todo el plan Compliance','AgroGestión CTG / CPE','Portales Operador · Destinatario · Transportista','PampaGo marketplace agro','Alertas SENASA y granos','Soporte prioritario']
   },
   estudio: {
-    label: 'Estudio', amount: 'Consultar', period: '',
-    desc: 'Para estudios contables con varias empresas.',
-    features: ['Todo el plan Negocio','Hasta 25 CUITs','Usuarios ilimitados','Conciliación bancaria avanzada','API + integración a medida','Onboarding white-glove']
+    label: 'Empresa', amount: 'USD 79', period: '/mes',
+    desc: 'Suite completa para PyMEs con necesidades estratégicas.',
+    features: ['Todo el plan Campo','SAS PyME — formación digital','RIGI — elegibilidad y score','Incentivos: PIMI · Exporta Simple · Eco del Conocimiento','RetailOS — POS + stock','Diagnóstico IA 5 dimensiones','Hasta 5 usuarios · contador incluido']
+  },
+  pro: {
+    label: 'Pro + API', amount: 'USD 149', period: '/mes',
+    desc: 'Para estudios contables con múltiples clientes.',
+    features: ['Todo el plan Empresa','Hasta 25 CUITs gestionados','API de compliance para integrar','Usuarios ilimitados','Onboarding personalizado','SLA garantizado']
   },
 };
 
 const ALL_SERVICES = [
-  { id:'factura-facil', icon:'📄', name:'FacturaFácil', desc:'Facturación electrónica con ARCA. Facturas A, B, C y M ilimitadas.', href:'factura-facil.html', plans:['inicial','negocio','estudio'] },
-  { id:'dashboard-bi',  icon:'📊', name:'Dashboard BI', desc:'Análisis y reportes en tiempo real de tu negocio.', href:'dashboard-bi.html', plans:['negocio','estudio'] },
-  { id:'retail',        icon:'🛍️', name:'Retail', desc:'Punto de venta, stock y gestión de local.', href:'retail.html', plans:['negocio','estudio'] },
-  { id:'agropecuario',  icon:'🌾', name:'Agropecuario', desc:'Gestión específica para el sector agropecuario.', href:'agropecuario.html', plans:['estudio'] },
+  { id:'factura-facil', icon:'📄', name:'FacturaFácil',       desc:'Facturación electrónica con ARCA. Facturas A, B, C y M ilimitadas.',                href:'factura-facil.html',                          plans:['inicial','negocio','estudio','pro'] },
+  { id:'dashboard-bi',  icon:'📊', name:'Dashboard BI',       desc:'Análisis contable, IVA, F931, SICORE y alertas fiscales en tiempo real.',            href:'https://dashbi.pymestudio.xyz',               plans:['inicial','negocio','estudio','pro'] },
+  { id:'vencimientos',  icon:'⏰', name:'Vencimientos',        desc:'Calendario ARCA 2026 con alertas proactivas por email antes de cada vencimiento.',   href:'https://dashbi.pymestudio.xyz',               plans:['inicial','negocio','estudio','pro'] },
+  { id:'agropecuario',  icon:'🌾', name:'AgroGestión CTG/CPE',desc:'Carta de Porte y CTG integrados con ARCA. Portales para todos los actores.',         href:'agropecuario.html',                           plans:['negocio','estudio','pro'] },
+  { id:'pampago',       icon:'🐄', name:'PampaGo',             desc:'Marketplace de servicios agropecuarios. Conectá con prestadores y productores.',     href:'https://pampago.xyz',                         plans:['negocio','estudio','pro'] },
+  { id:'sas-pyme',      icon:'🏢', name:'SAS PyME',            desc:'Formación de Sociedad por Acciones Simplificada digital. Rápido, sin escribano.',    href:'https://pymerimi.vercel.app',                 plans:['estudio','pro'] },
+  { id:'rigi',          icon:'⚖️', name:'RIGI',                desc:'Régimen de Incentivo para Grandes Inversiones. Diagnóstico de elegibilidad y score.',href:'https://pymerimi.vercel.app',                 plans:['estudio','pro'] },
+  { id:'incentivos',    icon:'🏷️', name:'Incentivos PyME',     desc:'PIMI, Exporta Simple, Economía del Conocimiento, Decreto 242/2026.',                 href:'https://pymerimi.vercel.app',                 plans:['estudio','pro'] },
+  { id:'diagnostico-ia',icon:'🤖', name:'Diagnóstico IA',      desc:'Análisis completo de salud empresarial: fiscal, laboral, societaria, financiera.',    href:'https://dashbi.pymestudio.xyz',               plans:['estudio','pro'] },
+  { id:'retail',        icon:'🛍️', name:'RetailOS',             desc:'Punto de venta, stock multi-depósito, libro IVA y gestión de local.',               href:'retail.html',                                 plans:['estudio','pro'] },
 ];
 
 async function loadProfile() {
