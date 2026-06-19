@@ -4447,7 +4447,7 @@ async function sbSignUp({ email, password, metadata }) {
       email,
       password,
       data: metadata || {},
-      options: { emailRedirectTo: window.location.origin + '/portal.html' },
+      options: { emailRedirectTo: 'https://www.pymestudio.xyz/portal.html' },
     }),
   });
   const body = await res.json().catch(() => ({}));
