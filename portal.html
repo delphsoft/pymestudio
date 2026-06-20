@@ -651,34 +651,38 @@ async function doLogin() {
   if (!email || !pass) { showErr(err, 'Completá email y contraseña.'); return; }
   btn.disabled = true; btn.textContent = 'Ingresando…';
   try {
-    const timeout = new Promise((_, rej) =>
-      setTimeout(() => rej(new Error('timeout')), 10000)
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 10000);
+    const resp = await fetch(
+      SB_URL + '/auth/v1/token?grant_type=password',
+      {
+        method:  'POST',
+        headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email, password: pass }),
+        signal:  controller.signal,
+      }
     );
-    const { data, error } = await Promise.race([
-      sb.auth.signInWithPassword({ email, password: pass }),
-      timeout
-    ]);
-    if (error) {
-      const msg = error.message === 'Invalid login credentials'
+    clearTimeout(timer);
+    const result = await resp.json();
+    if (!resp.ok || result.error) {
+      const raw = result.error_description || result.msg || result.error || 'Error desconocido';
+      const msg = raw.includes('Invalid login') || raw.includes('invalid_grant')
         ? 'Email o contraseña incorrectos.'
-        : error.message === 'Email not confirmed'
+        : raw.includes('not confirmed')
         ? 'Confirmá tu email antes de ingresar.'
-        : error.message;
+        : raw;
       showErr(err, msg);
       btn.disabled = false; btn.textContent = 'Ingresar';
-    } else if (data?.user) {
-      // Éxito: no esperamos onAuthStateChange, actuamos directo
-      currentUser = data.user;
-      if (data.session?.access_token) {
-        localStorage.setItem('ff_jwt', data.session.access_token);
-      }
+    } else {
+      currentUser = result.user;
+      localStorage.setItem('ff_jwt', result.access_token);
       try { await loadProfile(); } catch(e) { console.warn('loadProfile:', e); }
       showApp();
     }
   } catch (e) {
-    const msg = e.message === 'timeout'
-      ? 'Sin respuesta de Supabase. El proyecto puede estar pausado o hay un problema de red.'
-      : 'Error de conexión: ' + e.message;
+    const msg = e.name === 'AbortError'
+      ? 'Sin respuesta de Supabase después de 10s. Revisá la consola de red.'
+      : 'Error de red: ' + e.message;
     showErr(err, msg);
     btn.disabled = false; btn.textContent = 'Ingresar';
   }
