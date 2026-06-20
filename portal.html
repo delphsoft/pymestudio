@@ -692,11 +692,10 @@ function openDashBI() {
 sb.auth.onAuthStateChange(async (event, session) => {
   if (session) {
     currentUser = session.user;
-    // Guardar access_token como ff_jwt para SSO con DashBI
     if (session.access_token) {
       localStorage.setItem('ff_jwt', session.access_token);
     }
-    await loadProfile();
+    try { await loadProfile(); } catch(e) { console.warn('loadProfile error:', e); }
     showApp();
   } else {
     localStorage.removeItem('ff_jwt');
