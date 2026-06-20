@@ -647,12 +647,23 @@ async function doLogin() {
   const pass  = document.getElementById('login-pass').value;
   const btn   = document.getElementById('login-btn');
   const err   = document.getElementById('login-error');
-  if (!email || !pass) { showErr(err,'Completá email y contraseña.'); return; }
+  err.style.display = 'none';
+  if (!email || !pass) { showErr(err, 'Completá email y contraseña.'); return; }
   btn.disabled = true; btn.textContent = 'Ingresando…';
-  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if (error) {
-    showErr(err, error.message === 'Invalid login credentials'
-      ? 'Email o contraseña incorrectos.' : error.message);
+  try {
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      const msg = error.message === 'Invalid login credentials'
+        ? 'Email o contraseña incorrectos.'
+        : error.message === 'Email not confirmed'
+        ? 'Confirmá tu email antes de ingresar.'
+        : error.message;
+      showErr(err, msg);
+      btn.disabled = false; btn.textContent = 'Ingresar';
+    }
+    // éxito: onAuthStateChange se encarga de mostrar el app
+  } catch (e) {
+    showErr(err, 'Error de conexión. Revisá tu internet e intentá de nuevo.');
     btn.disabled = false; btn.textContent = 'Ingresar';
   }
 }
