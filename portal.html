@@ -444,7 +444,6 @@ textarea:focus{border-color:var(--accent)}
               <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px" id="quick-links">
                 <a class="btn-service primary" onclick="openDashBI()" style="display:block;text-align:center;cursor:pointer">📊 Dashboard BI</a>
                 <a class="btn-service" href="https://facturafacil.pymestudio.xyz" target="_blank" style="display:block;text-align:center">📄 FacturaFácil</a>
-                <a class="btn-service" href="https://facturafacil.pymestudio.xyz" target="_blank" style="display:block;text-align:center">⏰ Vencimientos</a>
               </div>
             </div>
           </div>
@@ -682,7 +681,11 @@ async function doLogout() {
 
 // ── Abrir DashBI con token SSO ───────────────────────────────
 function openDashBI() {
-  window.open('https://dashbi.pymestudio.xyz', '_blank')
+  const token = localStorage.getItem('ff_jwt')
+  const url = token
+    ? 'https://dashbi.pymestudio.xyz?token=' + encodeURIComponent(token)
+    : 'https://dashbi.pymestudio.xyz'
+  window.open(url, '_blank')
 }
 
 // Auth state listener
@@ -734,7 +737,6 @@ const PLAN_DATA = {
 const ALL_SERVICES = [
   { id:'factura-facil', icon:'📄', name:'FacturaFácil',       desc:'Facturación electrónica con ARCA. Facturas A, B, C y M ilimitadas.',                href:'https://facturafacil.pymestudio.xyz',         plans:['inicial','negocio','estudio','pro'] },
   { id:'dashboard-bi',  icon:'📊', name:'Dashboard BI',       desc:'Análisis contable, IVA, F931, SICORE y alertas fiscales en tiempo real.',            href:'__dashbi__',                                  plans:['inicial','negocio','estudio','pro'] },
-  { id:'vencimientos',  icon:'⏰', name:'Vencimientos',        desc:'Calendario ARCA 2026 con alertas proactivas por email antes de cada vencimiento.',   href:'https://dashbi.pymestudio.xyz',               plans:['inicial','negocio','estudio','pro'] },
   { id:'agropecuario',  icon:'🌾', name:'AgroGestión CTG/CPE',desc:'Carta de Porte y CTG integrados con ARCA. Portales para todos los actores.',         href:'https://pampagoharvest.vercel.app',           plans:['negocio','estudio','pro'] },
   { id:'pampago',       icon:'🐄', name:'PampaGo',             desc:'Marketplace de servicios agropecuarios. Conectá con prestadores y productores.',     href:'https://pampagoharvest.vercel.app',           plans:['negocio','estudio','pro'] },
   { id:'sas-pyme',      icon:'🏢', name:'SAS PyME',            desc:'Formación de Sociedad por Acciones Simplificada digital. Rápido, sin escribano.',    href:'https://pymerimi.vercel.app',                 plans:['estudio','pro'] },
