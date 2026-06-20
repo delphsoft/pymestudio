@@ -651,7 +651,13 @@ async function doLogin() {
   if (!email || !pass) { showErr(err, 'Completá email y contraseña.'); return; }
   btn.disabled = true; btn.textContent = 'Ingresando…';
   try {
-    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+    const timeout = new Promise((_, rej) =>
+      setTimeout(() => rej(new Error('timeout')), 10000)
+    );
+    const { error } = await Promise.race([
+      sb.auth.signInWithPassword({ email, password: pass }),
+      timeout
+    ]);
     if (error) {
       const msg = error.message === 'Invalid login credentials'
         ? 'Email o contraseña incorrectos.'
@@ -661,9 +667,11 @@ async function doLogin() {
       showErr(err, msg);
       btn.disabled = false; btn.textContent = 'Ingresar';
     }
-    // éxito: onAuthStateChange se encarga de mostrar el app
   } catch (e) {
-    showErr(err, 'Error de conexión. Revisá tu internet e intentá de nuevo.');
+    const msg = e.message === 'timeout'
+      ? 'Sin respuesta de Supabase. El proyecto puede estar pausado o hay un problema de red.'
+      : 'Error de conexión: ' + e.message;
+    showErr(err, msg);
     btn.disabled = false; btn.textContent = 'Ingresar';
   }
 }
