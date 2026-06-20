@@ -783,10 +783,29 @@ const ALL_SERVICES = [
 ];
 
 async function loadProfile() {
-  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  profile = data || { nombre: currentUser.email.split('@')[0], empresa: '', plan: 'inicial', plan_status: 'trial', trial_ends_at: null };
-  const { data: srvData } = await sb.from('servicios_cliente').select('*').eq('user_id', currentUser.id);
-  services = srvData || [];
+  const jwt = localStorage.getItem('ff_jwt');
+  const headers = {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + jwt,
+    'Content-Type': 'application/json',
+  };
+  const fallback = { nombre: currentUser.email.split('@')[0], empresa: '', plan: 'inicial', plan_status: 'trial', trial_ends_at: null };
+  try {
+    const r = await Promise.race([
+      fetch(SB_URL + '/rest/v1/profiles?id=eq.' + currentUser.id + '&limit=1', { headers }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000)),
+    ]);
+    const rows = await r.json();
+    profile = (Array.isArray(rows) && rows[0]) ? rows[0] : fallback;
+  } catch { profile = fallback; }
+  try {
+    const r2 = await Promise.race([
+      fetch(SB_URL + '/rest/v1/servicios_cliente?user_id=eq.' + currentUser.id, { headers }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000)),
+    ]);
+    const rows2 = await r2.json();
+    services = Array.isArray(rows2) ? rows2 : [];
+  } catch { services = []; }
 }
 
 function showApp() {
