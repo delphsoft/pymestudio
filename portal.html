@@ -651,8 +651,9 @@ async function doLogin() {
   if (!email || !pass) { showErr(err, 'Completá email y contraseña.'); return; }
   btn.disabled = true; btn.textContent = 'Ingresando…';
   try {
+    console.log('[login] 1 - iniciando fetch a', SB_URL);
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 10000);
+    const timer = setTimeout(() => { console.log('[login] ABORT por timeout'); controller.abort(); }, 10000);
     const resp = await fetch(
       SB_URL + '/auth/v1/token?grant_type=password',
       {
@@ -662,8 +663,10 @@ async function doLogin() {
         signal:  controller.signal,
       }
     );
+    console.log('[login] 2 - respuesta HTTP', resp.status);
     clearTimeout(timer);
     const result = await resp.json();
+    console.log('[login] 3 - body parseado', Object.keys(result));
     if (!resp.ok || result.error) {
       const raw = result.error_description || result.msg || result.error || 'Error desconocido';
       const msg = raw.includes('Invalid login') || raw.includes('invalid_grant')
@@ -674,12 +677,15 @@ async function doLogin() {
       showErr(err, msg);
       btn.disabled = false; btn.textContent = 'Ingresar';
     } else {
+      console.log('[login] 4 - éxito, cargando perfil');
       currentUser = result.user;
       localStorage.setItem('ff_jwt', result.access_token);
       try { await loadProfile(); } catch(e) { console.warn('loadProfile:', e); }
+      console.log('[login] 5 - showApp');
       showApp();
     }
   } catch (e) {
+    console.error('[login] catch:', e.name, e.message);
     const msg = e.name === 'AbortError'
       ? 'Sin respuesta de Supabase después de 10s. Revisá la consola de red.'
       : 'Error de red: ' + e.message;
